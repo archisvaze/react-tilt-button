@@ -31,30 +31,37 @@ export default function Button({
     const [pos, setPos] = useState(null);
 
     // =========================
-    // HARD CLAMPS (THE ONLY FIX)
+    // SIMPLE PHYSICAL CLAMPS
     // =========================
 
     const totalH = Math.max(0, Number(height) || 0);
 
+    // Elevation
     const rawElevation = Math.max(0, Number(elevation) || 0);
-
-    // IMPORTANT: cap elevation to a sane fraction of height
     const MAX_ELEVATION_RATIO = 0.3;
     const maxElevation = totalH * MAX_ELEVATION_RATIO;
-
     const effectiveElevation = clamp(rawElevation, 0, maxElevation);
 
+    // Press inset
     const rawPressInset = Math.max(0, Number(pressInset) || 0);
     const effectivePressInset = clamp(rawPressInset, 0, effectiveElevation);
 
+    // Tilt
     const rawTilt = Math.max(0, Number(tilt) || 0);
-    const maxTilt = Math.max(0, Number((effectiveElevation * 0.2).toFixed(2)));
+    const maxTilt = Number((effectiveElevation / 9).toFixed(2));
     const effectiveTilt = clamp(rawTilt, 0, maxTilt);
 
+    // Radius
+    const faceHeight = totalH - effectiveElevation;
+    const maxRadius = Math.max(0, Math.floor(faceHeight / 3));
+    const rawRadius = Math.max(0, Number(radius) || 0);
+    const effectiveRadius = clamp(rawRadius, 0, maxRadius);
+
+    // Motion
     const motionMs = Math.max(0, Number(motion) || 0);
 
     // =========================
-    // INTERACTION (UNCHANGED)
+    // INTERACTION
     // =========================
 
     const handleMouseMove = (e) => {
@@ -89,7 +96,7 @@ export default function Button({
     };
 
     // =========================
-    // CSS VARS (SIMPLE, SAFE)
+    // CSS VARS
     // =========================
 
     const styleVars = {
@@ -97,7 +104,7 @@ export default function Button({
         '--press-inset': `${effectivePressInset}px`,
         '--button-hover-pressure': effectiveTilt,
         '--transform-speed': `${motionMs}ms`,
-        '--radius': typeof radius === 'number' ? `${radius}px` : radius,
+        '--radius': `${effectiveRadius}px`,
 
         '--surface-color': surfaceColor,
         '--side-color': sideColor,

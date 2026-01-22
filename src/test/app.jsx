@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { FiZap } from 'react-icons/fi';
 import Button from '../Button';
 import './app.css';
@@ -18,147 +18,81 @@ export default function App() {
         bordered: true,
     });
 
-    const MAX_ELEVATION_RATIO = 0.3;
-
-    const maxElevation = Math.floor(controls.height * MAX_ELEVATION_RATIO);
-    const effectiveElevation = Math.min(controls.elevation, maxElevation);
-
-    const faceHeight = controls.height - effectiveElevation;
-    const maxRadius = Math.max(0, Math.floor(faceHeight / 3));
-
-    const maxTilt = Math.max(0, Number((effectiveElevation * 0.2).toFixed(2)));
-
     const update = (key, value) => {
         setControls((c) => ({ ...c, [key]: value }));
     };
 
-    useEffect(() => {
-        setControls((c) => {
-            const next = { ...c };
-
-            if (next.elevation > maxElevation) next.elevation = maxElevation;
-            if (next.pressInset > next.elevation) next.pressInset = next.elevation;
-            if (next.radius > maxRadius) next.radius = maxRadius;
-            if (next.tilt > maxTilt) next.tilt = maxTilt;
-
-            return next;
-        });
-    }, [controls.height, maxElevation, maxRadius]);
-
     return (
         <div style={{ width: '100%', display: 'flex', flexDirection: 'column', padding: '20px' }}>
-            <header
-                style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    marginBottom: '30px',
-                }}
-            >
+            <header style={{ textAlign: 'center', marginBottom: '30px' }}>
                 <h1>React 3D Button Lab</h1>
-                <p>Tune the physics. Feel the difference.</p>
+                <p>Tune the physics. Break the rules. See what gets fixed.</p>
             </header>
 
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '30px' }}>
+            <div style={{ display: 'flex', gap: '30px', alignItems: 'flex-start' }}>
                 <div style={{ width: '70%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <h2>Live Button</h2>
+
                     <Button {...controls}>
                         <FiZap /> Editable Button
                     </Button>
                 </div>
 
                 <div style={{ width: '30%' }}>
-                    <h2>Physics</h2>
+                    <h2>Controls</h2>
 
                     <Slider
-                        label={`Elevation (0–${maxElevation})`}
+                        label='Elevation'
                         min={0}
-                        max={maxElevation}
+                        max={200}
                         value={controls.elevation}
                         onChange={(v) => update('elevation', v)}
                     />
-
                     <Slider
-                        label={`Press Inset (0–${effectiveElevation})`}
+                        label='Press Inset'
                         min={0}
-                        max={effectiveElevation}
+                        max={200}
                         value={controls.pressInset}
                         onChange={(v) => update('pressInset', v)}
                     />
-
                     <Slider
-                        label={`Tilt (0–${maxTilt})`}
+                        label='Tilt'
                         min={0}
-                        max={maxTilt}
+                        max={20}
                         step={0.1}
                         value={controls.tilt}
                         onChange={(v) => update('tilt', v)}
                     />
-
                     <Slider
-                        label='Motion (60–400 ms)'
-                        min={60}
-                        max={400}
+                        label='Motion'
+                        min={0}
+                        max={500}
                         value={controls.motion}
                         onChange={(v) => update('motion', v)}
                     />
-
                     <Slider
-                        label={`Radius (0–${maxRadius})`}
+                        label='Radius'
                         min={0}
-                        max={maxRadius}
+                        max={200}
                         value={controls.radius}
                         onChange={(v) => update('radius', v)}
                     />
 
                     <h2>Size</h2>
-
                     <Slider
-                        label='Width (120–500)'
+                        label='Width'
                         min={120}
                         max={500}
                         value={controls.width}
                         onChange={(v) => update('width', v)}
                     />
-
                     <Slider
-                        label='Height (40–160)'
+                        label='Height'
                         min={40}
                         max={160}
                         value={controls.height}
                         onChange={(v) => update('height', v)}
                     />
-
-                    <h2>Colors</h2>
-
-                    <ColorInput
-                        label='Surface'
-                        value={controls.surfaceColor}
-                        onChange={(v) => update('surfaceColor', v)}
-                    />
-
-                    <ColorInput
-                        label='Side'
-                        value={controls.sideColor}
-                        onChange={(v) => update('sideColor', v)}
-                    />
-
-                    <ColorInput
-                        label='Text'
-                        value={controls.textColor}
-                        onChange={(v) => update('textColor', v)}
-                    />
-
-                    <label className='checkbox'>
-                        <input
-                            type='checkbox'
-                            checked={controls.bordered}
-                            onChange={(e) => update('bordered', e.target.checked)}
-                        />
-                        Bordered
-                    </label>
                 </div>
             </div>
         </div>
@@ -182,26 +116,4 @@ function Slider({ label, min, max, step = 1, value, onChange }) {
             />
         </div>
     );
-}
-
-function ColorInput({ label, value, onChange }) {
-    return (
-        <div className='color-input'>
-            <span>{label}</span>
-            <input
-                type='color'
-                value={isHexColor(value) ? value : '#ffffff'}
-                onChange={(e) => onChange(e.target.value)}
-            />
-            <input
-                type='text'
-                value={value}
-                onChange={(e) => onChange(e.target.value)}
-            />
-        </div>
-    );
-}
-
-function isHexColor(str) {
-    return /^#([0-9A-F]{3}){1,2}$/i.test(str);
 }

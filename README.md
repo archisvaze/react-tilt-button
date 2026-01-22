@@ -1,104 +1,39 @@
-# React 3D Soft Button
+# SoftButton
 
-A physically-inspired, squishy, depth-aware 3D button component for React.
+A 2.5D button component with a few hard geometric constraints.
 
-This project exists because **great UI micro-interactions should not disappear just because a library gets deprecated.**
-
----
-
-## Why this exists
-
-For years, **react-awesome-button** was one of the nicest examples of a _tactile_, _physical_, _playful_ button on the web. It did not just animate, it **felt** like a real object:
-
-- It had depth
-- It squished when pressed
-- It deformed when hovered
-- It felt like a soft, physical surface
-
-Unfortunately, the original library is now deprecated and no longer works reliably in modern React setups.
-
-Rather than let this interaction pattern disappear, I decided to:
-
-> Rebuild the idea from scratch, with modern React, minimal code, and zero dependencies.
-
-This is **not a fork** and **not a port**. It is a **fresh, independent implementation** of the same _design philosophy_:
-
-> UI elements should feel like objects, not flat rectangles.
+Inspired by the look of older 3D button libraries (e.g. react-awesome-button), but implemented from scratch.
 
 ---
 
-## Philosophy
+## Geometry
 
-Most buttons today are:
-
-- Flat
-- Binary
-- Lifeless
-
-This button is:
-
-- **Physical**
-- **Deformable**
-- **Depth-aware**
-- **Tactile**
-
-You do not just click it.  
-You **press** it.
+- `height` = total height
+- `elevation` = side thickness
+- `faceHeight = height - elevation`
 
 ---
 
-## What makes it special
+## Constraints
 
-- Real 3D depth using pure CSS transforms
-- Face and side wall are separate surfaces
-- Hover deformation (left / middle / right)
-- Press compression that can go all the way to **zero height**
-- Fully configurable physics:
-    - Depth (elevation)
-    - Press distance
-    - Squishiness
-    - Motion speed
-- Cannot break, invert, or flip even with extreme values
-- No dependencies
-- No canvas
-- No WebGL
-- Just React + CSS
+Inputs are clamped to:
+
+- `elevation ≤ 0.3 * height`
+- `pressInset ≤ elevation`
+- `tilt ≤ elevation * 0.2`
+- `radius ≤ faceHeight / 3`
+
+If a value is outside its range, it is clamped and a warning is logged.
 
 ---
 
-## Demo / Playground
+## Demo
 
-The repo includes a **live control panel** where you can:
-
-- Select different button presets
-- Adjust:
-    - Elevation
-    - Press depth
-    - Tilt
-    - Motion speed
-    - Radius
-- See the physics update in real time
-
-This makes it easy to tune the button to match your product’s personality:
-
-- Heavy and solid
-- Light and snappy
-- Soft and playful
-- Sharp and clicky
+The demo lets you exceed these values.  
+The `Button` component always clamps internally.
 
 ---
 
-## Usage
+## License
 
-```
-<Button
-  elevation={14}
-  pressInset={5}
-  tilt={2}
-  motion={160}
-  bordered
->
-  Click Me
-</Button>
-
-```
+MIT
