@@ -4,11 +4,9 @@
   --button-hover-pressure: 2;
   --transform-speed: 160ms;
   --radius: 14px;
-
   --surface-color: #f3f4f6;
   --side-color: #d1d5db;
   --text-color: #111827;
-
   position: relative;
   border: none;
   background: transparent;
@@ -48,14 +46,11 @@
   background: var(--surface-color);
   color: var(--text-color);
   border-radius: var(--radius);
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   font-size: 18px;
   font-weight: 600;
-
   transform: translateY(0);
   transition: transform var(--transform-speed) ease-out;
 }
