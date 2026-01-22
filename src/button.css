@@ -1,0 +1,95 @@
+.soft-btn {
+  --button-raise-level: 14px;
+  --press-inset: 5px;
+  --button-hover-pressure: 2;
+  --transform-speed: 160ms;
+  --radius: 14px;
+
+  --surface-color: #f3f4f6;
+  --side-color: #d1d5db;
+  --text-color: #111827;
+
+  position: relative;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Wrapper */
+.soft-btn__wrapper {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+}
+
+/* Side wall */
+.soft-btn__wrapper::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: calc(100% - var(--button-raise-level));
+  background: var(--side-color);
+  border-radius: var(--radius);
+}
+
+/* Face */
+.soft-btn__content {
+  position: relative;
+  width: 100%;
+  height: calc(100% - var(--button-raise-level));
+  background: var(--surface-color);
+  color: var(--text-color);
+  border-radius: var(--radius);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 18px;
+  font-weight: 600;
+
+  transform: translateY(0);
+  transition: transform var(--transform-speed) ease-out;
+}
+
+.soft-btn__inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Bordered */
+.soft-btn--bordered .soft-btn__content {
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Hover deformation (YOUR ORIGINAL BEHAVIOR) */
+.soft-btn--middle .soft-btn__content {
+  transform: translateY(calc(1px * var(--button-hover-pressure)));
+}
+
+.soft-btn--left .soft-btn__content {
+  transform: skewY(calc(-1deg * var(--button-hover-pressure)));
+}
+
+.soft-btn--right .soft-btn__content {
+  transform: skewY(calc(1deg * var(--button-hover-pressure)));
+}
+
+/* Pressed: MOVE DOWN by pressInset */
+.soft-btn--active .soft-btn__content {
+  transform: translateY(var(--press-inset));
+  transition: transform calc(var(--transform-speed) * 0.8) ease-out;
+}
+
+/* Disabled */
+.soft-btn--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
