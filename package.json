@@ -1,68 +1,66 @@
 {
-  "name": "archis-parallax-button",
-  "version": "0.0.5",
-  "description": "",
-  "license": "MIT",
-  "author": "archisvaze",
-  "keywords": [],
-  "files": [
-    "dist",
-    "README.md"
-  ],
-  "main": "./dist/archis-parallax-button.umd.js",
-  "module": "./dist/archis-parallax-button.es.js",
-  "exports": {
-    ".": {
-      "import": "./dist/archis-parallax-button.es.js",
-      "require": "./dist/archis-parallax-button.umd.js"
-    }
-  },
-  "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "test": "vitest run",
-    "watch": "vitest",
-    "coverage": "vitest run --coverage"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
+    "name": "archis-parallax-button",
+    "version": "0.0.5",
+    "description": "",
+    "license": "MIT",
+    "author": "archisvaze",
+    "keywords": [],
+    "files": [
+        "dist",
+        "README.md"
     ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "eslintConfig": {
-    "env": {
-      "browser": true,
-      "node": true,
-      "es2020": true
+    "main": "./dist/archis-parallax-button.umd.js",
+    "module": "./dist/archis-parallax-button.es.js",
+    "exports": {
+        ".": {
+            "import": "./dist/archis-parallax-button.es.js",
+            "require": "./dist/archis-parallax-button.umd.js"
+        }
     },
-    "extends": [
-      "eslint:recommended",
-      "plugin:react/recommended"
-    ],
-    "parserOptions": {
-      "sourceType": "module"
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "test": "vitest run",
+        "watch": "vitest",
+        "coverage": "vitest run --coverage"
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "eslintConfig": {
+        "env": {
+            "browser": true,
+            "node": true,
+            "es2020": true
+        },
+        "extends": [
+            "eslint:recommended",
+            "plugin:react/recommended"
+        ],
+        "parserOptions": {
+            "sourceType": "module"
+        }
+    },
+    "devDependencies": {
+        "@vitejs/plugin-react": "^5.1.2",
+        "react": "^19.2.3",
+        "react-dom": "^19.2.3",
+        "vite": "^7.3.1"
+    },
+    "peerDependencies": {
+        "react": "^19.2.3",
+        "react-dom": "^19.2.3"
+    },
+    "dependencies": {
+        "react-icons": "^5.5.0"
     }
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^5.1.2",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "vite": "^7.3.1"
-  },
-  "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
-  },
-  "dependencies": {
-    "react-icons": "^5.5.0",
-    "react-parallax-tilt": "^1.7.315",
-    "sass": "^1.97.2"
-  }
 }
