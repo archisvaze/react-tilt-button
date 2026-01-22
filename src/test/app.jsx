@@ -7,7 +7,7 @@ export default function App() {
     const [controls, setControls] = useState({
         elevation: 14,
         pressInset: 5,
-        squish: 2,
+        tilt: 2,
         motion: 160,
         radius: 14,
         width: 280,
@@ -26,6 +26,8 @@ export default function App() {
     const faceHeight = controls.height - effectiveElevation;
     const maxRadius = Math.max(0, Math.floor(faceHeight / 3));
 
+    const maxTilt = Math.max(0, Number((effectiveElevation * 0.2).toFixed(2)));
+
     const update = (key, value) => {
         setControls((c) => ({ ...c, [key]: value }));
     };
@@ -37,6 +39,7 @@ export default function App() {
             if (next.elevation > maxElevation) next.elevation = maxElevation;
             if (next.pressInset > next.elevation) next.pressInset = next.elevation;
             if (next.radius > maxRadius) next.radius = maxRadius;
+            if (next.tilt > maxTilt) next.tilt = maxTilt;
 
             return next;
         });
@@ -86,12 +89,12 @@ export default function App() {
                     />
 
                     <Slider
-                        label='Squish (0–6)'
+                        label={`Tilt (0–${maxTilt})`}
                         min={0}
-                        max={6}
+                        max={maxTilt}
                         step={0.1}
-                        value={controls.squish}
-                        onChange={(v) => update('squish', v)}
+                        value={controls.tilt}
+                        onChange={(v) => update('tilt', v)}
                     />
 
                     <Slider

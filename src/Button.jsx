@@ -12,7 +12,7 @@ export default function Button({
 
     elevation = 14,
     pressInset = 5,
-    squish = 2,
+    tilt = 2,
     motion = 160,
 
     width = 260,
@@ -47,7 +47,10 @@ export default function Button({
     const rawPressInset = Math.max(0, Number(pressInset) || 0);
     const effectivePressInset = clamp(rawPressInset, 0, effectiveElevation);
 
-    const squishVal = Math.max(0, Number(squish) || 0);
+    const rawTilt = Math.max(0, Number(tilt) || 0);
+    const maxTilt = Math.max(0, Number((effectiveElevation * 0.2).toFixed(2)));
+    const effectiveTilt = clamp(rawTilt, 0, maxTilt);
+
     const motionMs = Math.max(0, Number(motion) || 0);
 
     // =========================
@@ -92,7 +95,7 @@ export default function Button({
     const styleVars = {
         '--button-raise-level': `${effectiveElevation}px`,
         '--press-inset': `${effectivePressInset}px`,
-        '--button-hover-pressure': squishVal,
+        '--button-hover-pressure': effectiveTilt,
         '--transform-speed': `${motionMs}ms`,
         '--radius': typeof radius === 'number' ? `${radius}px` : radius,
 

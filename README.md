@@ -74,7 +74,7 @@ The repo includes a **live control panel** where you can:
 - Adjust:
     - Elevation
     - Press depth
-    - Squish
+    - Tilt
     - Motion speed
     - Radius
 - See the physics update in real time
@@ -94,7 +94,7 @@ This makes it easy to tune the button to match your product’s personality:
 <Button
   elevation={14}
   pressInset={5}
-  squish={2}
+  tilt={2}
   motion={160}
   bordered
 >
