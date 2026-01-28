@@ -3,21 +3,24 @@ import Button from '../Button';
 import './app.css';
 
 export default function App() {
-    const [label, setLabel] = useState('Squishy Button');
+    const [label, setLabel] = useState('Button');
 
-    const [width, setWidth] = useState(260);
-    const [faceHeight, setFaceHeight] = useState(52);
-    const [elevation, setElevation] = useState(18);
-    const [pressInset, setPressInset] = useState(6);
-    const [tilt, setTilt] = useState(2);
+    const [width, setWidth] = useState(400);
+    const [faceHeight, setFaceHeight] = useState(120);
+    const [elevation, setElevation] = useState(20);
+    const [pressInset, setPressInset] = useState(10);
+    const [tilt, setTilt] = useState(10);
     const [radius, setRadius] = useState(14);
     const [motion, setMotion] = useState(160);
 
-    const [surfaceColor, setSurfaceColor] = useState('#f3f4f6');
-    const [sideColor, setSideColor] = useState('#d1d5db');
-    const [textColor, setTextColor] = useState('#111827');
+    const [surfaceColor, setSurfaceColor] = useState('#2c2c39');
+    const [sideColor, setSideColor] = useState('#b22b3b');
+    const [textColor, setTextColor] = useState('#ffffff');
 
-    const [bordered, setBordered] = useState(false);
+    const [bordered, setBordered] = useState(true);
+    const [borderColor, setBorderColor] = useState('#d9445b');
+    const [borderWidth, setBorderWidth] = useState(2);
+
     const [disabled, setDisabled] = useState(false);
 
     return (
@@ -35,6 +38,8 @@ export default function App() {
                     sideColor={sideColor}
                     textColor={textColor}
                     bordered={bordered}
+                    borderColor={borderColor}
+                    borderWidth={borderWidth}
                     disabled={disabled}
                 >
                     {label}
@@ -42,7 +47,7 @@ export default function App() {
             </div>
 
             <div className='demo-panel'>
-                <h2>Solid Button Configurator</h2>
+                <h2>Tilty Button Configurator</h2>
 
                 <div className='group'>
                     <label>Label</label>
@@ -62,7 +67,7 @@ export default function App() {
                         max={500}
                     />
                     <Control
-                        label='Face Height'
+                        label='Total Button Height'
                         value={faceHeight}
                         set={setFaceHeight}
                         min={32}
@@ -104,6 +109,13 @@ export default function App() {
                         min={0}
                         max={600}
                     />
+                    <Control
+                        label='Border Width'
+                        value={borderWidth}
+                        set={setBorderWidth}
+                        min={0}
+                        max={10}
+                    />
                 </div>
 
                 <div className='grid colors'>
@@ -121,6 +133,17 @@ export default function App() {
                         label='Text'
                         value={textColor}
                         set={setTextColor}
+                    />
+                    <Color
+                        label='Border'
+                        value={borderColor}
+                        set={setBorderColor}
+                    />
+
+                    <Color
+                        label='Border'
+                        value={borderColor}
+                        set={setBorderColor}
                     />
                 </div>
 

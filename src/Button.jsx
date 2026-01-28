@@ -24,6 +24,9 @@ export default function Button({
     textColor = '#111827',
 
     bordered = false,
+    borderColor = 'rgba(0,0,0,0.35)',
+    borderWidth = 2,
+
     className = '',
 }) {
     const rootRef = useRef(null);
@@ -48,7 +51,7 @@ export default function Button({
 
     // Tilt
     const rawTilt = Math.max(0, Number(tilt) || 0);
-    const maxTilt = Number((effectiveElevation / 12).toFixed(2));
+    const maxTilt = Number((effectiveElevation / 9).toFixed(2));
     const effectiveTilt = clamp(rawTilt, 0, maxTilt);
 
     // Radius
@@ -105,10 +108,11 @@ export default function Button({
         '--button-hover-pressure': effectiveTilt,
         '--transform-speed': `${motionMs}ms`,
         '--radius': `${effectiveRadius}px`,
-
         '--surface-color': surfaceColor,
         '--side-color': sideColor,
         '--text-color': textColor,
+        '--border-color': borderColor,
+        '--border-width': `${borderWidth}px`,
 
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height,
