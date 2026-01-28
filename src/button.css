@@ -29,10 +29,8 @@
 .soft-btn__wrapper::before {
   content: "";
   position: absolute;
-  left: 0.1%;
-  right: 0.1%;
-  /* left: 0; */
-  /* right: 0; */
+  left: 0;
+  right: 0;
   bottom: 0;
   height: calc(85% - var(--button-raise-level));
   background: var(--side-color);
@@ -62,10 +60,6 @@
   transform-origin: center;
 }
 
-
-
-
-
 .soft-btn__inner {
   display: inline-flex;
   align-items: center;
@@ -74,7 +68,7 @@
 
 /* Bordered */
 .soft-btn--bordered .soft-btn__content {
-  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 0 3px rgba(0, 0, 0, 0.3);
 }
 
 /* Hover deformation */
@@ -94,9 +88,6 @@
 .soft-btn--active .soft-btn__content {
   transform: translateY(var(--press-inset));
   transition: transform calc(var(--transform-speed) * 0.8) ease-out;
-  box-shadow:
-    inset 2px 2px 6px rgba(0, 0, 0, 0.35),
-    inset -2px -2px 6px rgba(255, 255, 255, 0.25);
 }
 
 /* Disabled */
