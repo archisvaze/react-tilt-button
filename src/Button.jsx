@@ -48,12 +48,12 @@ export default function Button({
 
     // Tilt
     const rawTilt = Math.max(0, Number(tilt) || 0);
-    const maxTilt = Number((effectiveElevation / 9).toFixed(2));
+    const maxTilt = Number((effectiveElevation / 12).toFixed(2));
     const effectiveTilt = clamp(rawTilt, 0, maxTilt);
 
     // Radius
     const faceHeight = totalH - effectiveElevation;
-    const maxRadius = Math.max(0, Math.floor(faceHeight / 3));
+    const maxRadius = Math.max(0, Math.floor(faceHeight / 4));
     const rawRadius = Math.max(0, Number(radius) || 0);
     const effectiveRadius = clamp(rawRadius, 0, maxRadius);
 

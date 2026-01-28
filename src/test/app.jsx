@@ -36,7 +36,6 @@ export default function App() {
                     textColor={textColor}
                     bordered={bordered}
                     disabled={disabled}
-
                 >
                     {label}
                 </Button>
