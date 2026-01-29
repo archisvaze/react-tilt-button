@@ -1,6 +1,12 @@
 # TiltyButton
 
-A physical, 3D-style React button that:
+> A physical, 3D tactile React button component with tilt, squish, and real depth.
+
+🔗 **Live Demo:** https://tilty-button.vercel.app/
+
+![Tilty Button Preview](https://tilty-button.vercel.app/og-image.png)
+
+Features:
 
 - Tilts on hover (left / middle / right)
 - Squishes on press
@@ -58,6 +64,19 @@ You can still override any value manually:
 ```
 
 ---
+
+## Demo
+
+Try it live here:
+
+👉 **https://tilty-button.vercel.app/**
+
+The demo lets you:
+
+- Test all variants
+- Change geometry (depth, radius, tilt, etc.)
+- See physical constraints in action
+- Copy settings for your own usage
 
 ## Full Example
 
