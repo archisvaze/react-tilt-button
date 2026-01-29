@@ -188,13 +188,13 @@ It automatically shifts based on hover position (left / middle / right) and fade
 
 ```jsx
 <TiltButton
-    glareColor="#ffffff"
+    glareColor='#ffffff'
     glareOpacity={0.12}
     glareWidth={60}
 >
     Shiny Button
 </TiltButton>
-
+```
 
 ---
 
@@ -236,21 +236,3 @@ All visuals are driven by CSS variables:
 So you can theme it externally if needed.
 
 ---
-
-## Philosophy
-
-This is not a flat UI button.
-
-It is a **physical, tactile UI primitive** that behaves like an object:
-
-- It has depth
-- It deforms
-- It squishes
-- It reacts to pressure
-
----
-
-## License
-
-Use it. Ship it. Modify it.
-```
