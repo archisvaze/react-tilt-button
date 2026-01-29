@@ -1,23 +1,23 @@
-import path from "path";
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import react from '@vitejs/plugin-react';
+import path from 'path';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
     build: {
         lib: {
-            entry: path.resolve(__dirname, "src/index.jsx"),
-            name: "React Parallax Button",
-            fileName: (format) => `archis-parallax-button.${format}.js`,
+            entry: path.resolve(__dirname, 'src/index.js'),
+            name: 'tilty-button',
+            fileName: (format) => `tilty-button.${format}.js`,
         },
         rollupOptions: {
-            external: ["react", "react-dom"],
+            external: ['react', 'react-dom'],
             output: {
                 globals: {
-                    react: "React",
+                    react: 'React',
                 },
             },
         },
     },
     plugins: [react()],
-    server: {port : 3000}
+    server: { port: 3000 },
 });
