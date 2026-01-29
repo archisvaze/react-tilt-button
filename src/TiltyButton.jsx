@@ -1,14 +1,17 @@
 import { useRef, useState } from 'react';
-import './button.css';
+import './TiltyButton.css';
+import { VARIANTS } from './variants';
 
 function clamp(v, min, max) {
     return Math.max(min, Math.min(max, v));
 }
 
-export default function Button({
+export default function TiltyButton({
     children,
     onClick,
     disabled = false,
+
+    variant = 'solid',
 
     elevation = 14,
     pressInset = 5,
@@ -19,15 +22,17 @@ export default function Button({
     height = 64,
     radius = 14,
 
-    surfaceColor = '#f3f4f6',
-    sideColor = '#d1d5db',
-    textColor = '#111827',
-
-    bordered = false,
-    borderColor = 'rgba(0,0,0,0.35)',
-    borderWidth = 2,
+    surfaceColor,
+    sideColor,
+    textColor,
+    bordered,
+    borderColor,
+    borderWidth,
 
     className = '',
+
+    style: userStyle,
+    ...props
 }) {
     const rootRef = useRef(null);
     const [active, setActive] = useState(false);
@@ -74,7 +79,7 @@ export default function Button({
 
         const rect = el.getBoundingClientRect();
         const x = e.clientX - rect.left;
-        const w = rect.width;
+        const w = rect.width || 1; // prevent divide-by-zero edge
 
         if (x < w * 0.33) setPos('left');
         else if (x > w * 0.66) setPos('right');
@@ -102,20 +107,37 @@ export default function Button({
     // CSS VARS
     // =========================
 
+    const variantPreset = VARIANTS[variant] || VARIANTS.solid;
+
+    const finalSurfaceColor = surfaceColor ?? variantPreset.surfaceColor;
+    const finalSideColor = sideColor ?? variantPreset.sideColor;
+    const finalTextColor = textColor ?? variantPreset.textColor;
+    const finalBordered = bordered ?? variantPreset.bordered;
+    const finalBorderColor = borderColor ?? variantPreset.borderColor;
+    const finalBorderWidth = borderWidth ?? variantPreset.borderWidth;
+
     const styleVars = {
         '--button-raise-level': `${effectiveElevation}px`,
         '--press-inset': `${effectivePressInset}px`,
         '--button-hover-pressure': effectiveTilt,
         '--transform-speed': `${motionMs}ms`,
         '--radius': `${effectiveRadius}px`,
-        '--surface-color': surfaceColor,
-        '--side-color': sideColor,
-        '--text-color': textColor,
-        '--border-color': borderColor,
-        '--border-width': `${borderWidth}px`,
+
+        '--surface-color': finalSurfaceColor,
+        '--side-color': finalSideColor,
+        '--text-color': finalTextColor,
+        '--border-color': finalBorderColor,
+        '--border-width': `${finalBorderWidth}px`,
 
         width: typeof width === 'number' ? `${width}px` : width,
         height: typeof height === 'number' ? `${height}px` : height,
+    };
+
+    const safeUserStyle = userStyle && typeof userStyle === 'object' ? userStyle : {};
+
+    const mergedStyle = {
+        ...styleVars,
+        ...safeUserStyle,
     };
 
     const classes = [
@@ -123,7 +145,9 @@ export default function Button({
         active && 'soft-btn--active',
         pos && `soft-btn--${pos}`,
         disabled && 'soft-btn--disabled',
-        bordered && 'soft-btn--bordered',
+
+        finalBordered && 'soft-btn--bordered',
+
         className,
     ]
         .filter(Boolean)
@@ -131,9 +155,10 @@ export default function Button({
 
     return (
         <button
+            {...props}
             ref={rootRef}
             className={classes}
-            style={styleVars}
+            style={mergedStyle}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             onMouseDown={handleMouseDown}

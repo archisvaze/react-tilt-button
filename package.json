@@ -1,6 +1,6 @@
 {
-    "name": "archis-parallax-button",
-    "version": "0.0.5",
+    "name": "tilty-button",
+    "version": "0.0.1",
     "description": "",
     "license": "MIT",
     "author": "archisvaze",
@@ -9,12 +9,12 @@
         "dist",
         "README.md"
     ],
-    "main": "./dist/archis-parallax-button.umd.js",
-    "module": "./dist/archis-parallax-button.es.js",
+    "main": "./dist/tilty-button.umd.js",
+    "module": "./dist/tilty-button.es.js",
     "exports": {
         ".": {
-            "import": "./dist/archis-parallax-button.es.js",
-            "require": "./dist/archis-parallax-button.umd.js"
+            "import": "./dist/tilty-button.es.js",
+            "require": "./dist/tilty-button.umd.js"
         }
     },
     "scripts": {
@@ -59,8 +59,5 @@
     "peerDependencies": {
         "react": "^19.2.3",
         "react-dom": "^19.2.3"
-    },
-    "dependencies": {
-        "react-icons": "^5.5.0"
     }
 }

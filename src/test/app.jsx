@@ -1,6 +1,10 @@
-import { useState } from 'react';
-import Button from '../Button';
+import { useMemo, useState } from 'react';
+import { TiltyButton } from '..';
 import './app.css';
+
+function clamp(v, min, max) {
+    return Math.max(min, Math.min(max, v));
+}
 
 export default function App() {
     const [label, setLabel] = useState('Button');
@@ -9,7 +13,7 @@ export default function App() {
     const [faceHeight, setFaceHeight] = useState(120);
     const [elevation, setElevation] = useState(20);
     const [pressInset, setPressInset] = useState(10);
-    const [tilt, setTilt] = useState(10);
+    const [tilt, setTilt] = useState(4);
     const [radius, setRadius] = useState(14);
     const [motion, setMotion] = useState(160);
 
@@ -23,16 +27,42 @@ export default function App() {
 
     const [disabled, setDisabled] = useState(false);
 
+    // =========================
+    // Derived physical limits
+    // =========================
+
+    const maxElevation = useMemo(() => faceHeight * 0.3, [faceHeight]);
+    const clampedElevation = clamp(elevation, 0, maxElevation);
+
+    const maxPressInset = clampedElevation;
+    const clampedPressInset = clamp(pressInset, 0, maxPressInset);
+
+    const maxTilt = Number((clampedElevation / 9).toFixed(2));
+    const clampedTilt = clamp(tilt, 0, maxTilt);
+
+    const faceVisibleHeight = faceHeight - clampedElevation;
+    const maxRadius = Math.max(0, Math.floor(faceVisibleHeight / 4));
+    const clampedRadius = clamp(radius, 0, maxRadius);
+
+    // =========================
+    // Keep UI state sane (no loops)
+    // =========================
+
+    if (elevation !== clampedElevation) setElevation(clampedElevation);
+    if (pressInset !== clampedPressInset) setPressInset(clampedPressInset);
+    if (tilt !== clampedTilt) setTilt(clampedTilt);
+    if (radius !== clampedRadius) setRadius(clampedRadius);
+
     return (
         <div className='demo-root'>
             <div className='demo-preview'>
-                <Button
+                <TiltyButton
                     width={width}
                     height={faceHeight}
-                    elevation={elevation}
-                    pressInset={pressInset}
-                    tilt={tilt}
-                    radius={radius}
+                    elevation={clampedElevation}
+                    pressInset={clampedPressInset}
+                    tilt={clampedTilt}
+                    radius={clampedRadius}
                     motion={motion}
                     surfaceColor={surfaceColor}
                     sideColor={sideColor}
@@ -43,7 +73,7 @@ export default function App() {
                     disabled={disabled}
                 >
                     {label}
-                </Button>
+                </TiltyButton>
             </div>
 
             <div className='demo-panel'>
@@ -63,44 +93,44 @@ export default function App() {
                         label='Width'
                         value={width}
                         set={setWidth}
-                        min={120}
-                        max={500}
+                        min={0}
+                        max={1000}
                     />
                     <Control
                         label='Total Button Height'
                         value={faceHeight}
                         set={setFaceHeight}
-                        min={32}
-                        max={120}
+                        min={0}
+                        max={500}
                     />
                     <Control
                         label='Elevation'
-                        value={elevation}
+                        value={clampedElevation}
                         set={setElevation}
                         min={0}
-                        max={120}
+                        max={maxElevation}
                     />
                     <Control
                         label='Press Inset'
-                        value={pressInset}
+                        value={clampedPressInset}
                         set={setPressInset}
                         min={0}
-                        max={80}
+                        max={maxPressInset}
                     />
                     <Control
                         label='Tilt'
-                        value={tilt}
+                        value={clampedTilt}
                         set={setTilt}
                         min={0}
-                        max={10}
+                        max={maxTilt}
                         step={0.1}
                     />
                     <Control
                         label='Radius'
-                        value={radius}
+                        value={clampedRadius}
                         set={setRadius}
                         min={0}
-                        max={60}
+                        max={maxRadius}
                     />
                     <Control
                         label='Motion (ms)'
@@ -139,12 +169,6 @@ export default function App() {
                         value={borderColor}
                         set={setBorderColor}
                     />
-
-                    <Color
-                        label='Border'
-                        value={borderColor}
-                        set={setBorderColor}
-                    />
                 </div>
 
                 <div className='toggles'>
@@ -176,7 +200,7 @@ function Control({ label, value, set, min, max, step = 1 }) {
         <div className='control'>
             <div className='control-row'>
                 <span>{label}</span>
-                <span className='value'>{value}</span>
+                <span className='value'>{Number(value).toFixed(2)}</span>
             </div>
             <input
                 type='range'
