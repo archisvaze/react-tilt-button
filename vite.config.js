@@ -6,8 +6,8 @@ export default defineConfig({
     build: {
         lib: {
             entry: path.resolve(__dirname, 'src/index.js'),
-            name: 'tilty-button',
-            fileName: (format) => `tilty-button.${format}.js`,
+            name: 'react-tilt-button',
+            fileName: (format) => `react-tilt-button.${format}.js`,
         },
         rollupOptions: {
             external: ['react', 'react-dom'],

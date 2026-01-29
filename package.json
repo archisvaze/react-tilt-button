@@ -1,5 +1,5 @@
 {
-    "name": "tilty-button",
+    "name": "react-tilt-button",
     "version": "0.0.6",
     "description": "",
     "license": "MIT",
@@ -9,12 +9,12 @@
         "dist",
         "README.md"
     ],
-    "main": "./dist/tilty-button.umd.js",
-    "module": "./dist/tilty-button.es.js",
+    "main": "./dist/react-tilt-button.umd.js",
+    "module": "./dist/react-tilt-button.es.js",
     "exports": {
         ".": {
-            "import": "./dist/tilty-button.es.js",
-            "require": "./dist/tilty-button.umd.js"
+            "import": "./dist/react-tilt-button.es.js",
+            "require": "./dist/react-tilt-button.umd.js"
         }
     },
     "scripts": {

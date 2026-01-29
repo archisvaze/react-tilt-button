@@ -1,3 +1,3 @@
-import TiltyButton from './TiltyButton';
+import TiltButton from './TiltButton';
 import { VARIANTS } from './variants';
-export { TiltyButton, VARIANTS as TiltyButtonVariants };
+export { TiltButton, VARIANTS as TiltButtonVariants };

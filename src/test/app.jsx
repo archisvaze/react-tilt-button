@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { TiltyButton, TiltyButtonVariants } from '..';
+import { TiltButton } from '..';
 import './app.css';
 
 function clamp(v, min, max) {
@@ -56,7 +56,7 @@ export default function App() {
     return (
         <div className='demo-root'>
             <div className='demo-preview'>
-                <TiltyButton
+                <TiltButton
                     width={width}
                     height={faceHeight}
                     elevation={clampedElevation}
@@ -73,13 +73,13 @@ export default function App() {
                     disabled={disabled}
                 >
                     {label}
-                </TiltyButton>
+                </TiltButton>
 
-                <TiltyButton variant='warning'>{label}</TiltyButton>
+                <TiltButton variant='warning'>{label}</TiltButton>
             </div>
 
             <div className='demo-panel'>
-                <h2>Tilty Button Configurator</h2>
+                <h2>React Tilt Button Configurator</h2>
 
                 <div className='group'>
                     <label>Label</label>

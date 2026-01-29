@@ -1,12 +1,12 @@
 import { useRef, useState } from 'react';
-import './TiltyButton.css';
+import './TiltButton.css';
 import { VARIANTS } from './variants';
 
 function clamp(v, min, max) {
     return Math.max(min, Math.min(max, v));
 }
 
-export default function TiltyButton({
+export default function TiltButton({
     children,
     onClick,
     disabled = false,

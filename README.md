@@ -1,10 +1,10 @@
-# TiltyButton
+# React Tilt Button
 
 > A physical, 3D tactile React button component with tilt, squish, and real depth.
 
-🔗 **Live Demo:** https://tilty-button.vercel.app/
+🔗 **Live Demo:** https://react-tilt-button.vercel.app/
 
-![Tilty Button Preview](https://tilty-button.vercel.app/og-image.png)
+![React Tilt Button Preview](https://react-tilt-button.vercel.app/og-image.png)
 
 Features:
 
@@ -22,12 +22,12 @@ Inspired by `react-awesome-button`, but implemented as a small, dependency-free 
 ## Installation
 
 ```bash
-npm install tilty-button
+npm install react-tilt-button
 ```
 
 ```jsx
-import { TiltyButton } from 'tilty-button';
-import '/node_modules/tilty-button/dist/tilty-button.css';
+import { TiltButton } from 'react-tilt-button';
+import '/node_modules/react-tilt-button/dist/react-tilt-button.css';
 ```
 
 ---
@@ -35,7 +35,7 @@ import '/node_modules/tilty-button/dist/tilty-button.css';
 ## Basic Usage
 
 ```jsx
-<TiltyButton onClick={() => alert('Clicked!')}>Click me</TiltyButton>
+<TiltButton onClick={() => alert('Clicked!')}>Click me</TiltButton>
 ```
 
 ---
@@ -45,22 +45,22 @@ import '/node_modules/tilty-button/dist/tilty-button.css';
 Variants are **predefined visual styles** (material / theme presets).
 
 ```jsx
-<TiltyButton variant="solid">Solid</TiltyButton>
-<TiltyButton variant="outline">Outline</TiltyButton>
-<TiltyButton variant="arcade">Arcade</TiltyButton>
-<TiltyButton variant="carbon">Carbon</TiltyButton>
-<TiltyButton variant="warning">Warning</TiltyButton>
+<TiltButton variant="solid">Solid</TiltButton>
+<TiltButton variant="outline">Outline</TiltButton>
+<TiltButton variant="arcade">Arcade</TiltButton>
+<TiltButton variant="carbon">Carbon</TiltButton>
+<TiltButton variant="warning">Warning</TiltButton>
 ```
 
 You can still override any value manually:
 
 ```jsx
-<TiltyButton
+<TiltButton
     variant='solid'
     surfaceColor='#10b981'
 >
     Custom Green
-</TiltyButton>
+</TiltButton>
 ```
 
 ---
@@ -69,7 +69,7 @@ You can still override any value manually:
 
 Try it live here:
 
-👉 **https://tilty-button.vercel.app/**
+👉 **https://react-tilt-button.vercel.app/**
 
 The demo lets you:
 
@@ -81,7 +81,7 @@ The demo lets you:
 ## Full Example
 
 ```jsx
-<TiltyButton
+<TiltButton
     variant='arcade'
     width={400}
     height={120}
@@ -92,7 +92,7 @@ The demo lets you:
     motion={160}
 >
     My Button
-</TiltyButton>
+</TiltButton>
 ```
 
 ---
