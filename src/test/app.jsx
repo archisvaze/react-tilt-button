@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { TiltyButton } from '..';
+import { TiltyButton, TiltyButtonVariants } from '..';
 import './app.css';
 
 function clamp(v, min, max) {
@@ -74,6 +74,8 @@ export default function App() {
                 >
                     {label}
                 </TiltyButton>
+
+                <TiltyButton variant='warning'>{label}</TiltyButton>
             </div>
 
             <div className='demo-panel'>

@@ -45,11 +45,11 @@ export const VARIANTS = {
     },
 
     warning: {
-        surfaceColor: '#ef4444',
-        sideColor: '#991b1b',
+        surfaceColor: '#2c2c39',
+        sideColor: '#b22b3b',
         textColor: '#fff7ed',
         bordered: true,
-        borderColor: '#fde68a',
-        borderWidth: 3,
+        borderColor: '#d9445b',
+        borderWidth: 4,
     },
 };
