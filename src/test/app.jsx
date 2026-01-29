@@ -74,8 +74,6 @@ export default function App() {
                 >
                     {label}
                 </TiltButton>
-
-                <TiltButton variant='warning'>{label}</TiltButton>
             </div>
 
             <div className='demo-panel'>
