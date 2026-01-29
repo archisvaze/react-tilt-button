@@ -9,6 +9,9 @@
   --text-color: #111827;
   --border-color: rgba(0, 0, 0, 0.35);
   --border-width: 2px;
+  --glare-rgb: 255, 255, 255;
+  --glare-alpha: 0;
+  --glare-width: 0;
 
   position: relative;
   border: none;
@@ -39,6 +42,7 @@
   border-bottom-left-radius: var(--radius);
   border-bottom-right-radius: var(--radius);
   border-radius: var(--radius);
+  z-index: 1;
 }
 
 /* Face */
@@ -59,12 +63,14 @@
   will-change: transform;
   backface-visibility: hidden;
   transform-origin: center;
+  z-index: 2;
 }
 
 .soft-btn__inner {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  z-index: 4;
 }
 
 /* Bordered */
@@ -85,6 +91,48 @@
   transform: skewY(calc(1deg * var(--button-hover-pressure)));
 }
 
+/* Glare layer  */
+.soft-btn__content::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+
+  background: linear-gradient(90deg,
+      rgba(var(--glare-rgb), 0.0) calc(50% - var(--glare-width) * 1%),
+      rgba(var(--glare-rgb), calc(var(--glare-alpha) * 0.5)) calc(50% - var(--glare-width) * 0.5%),
+      rgba(var(--glare-rgb), var(--glare-alpha)) 50%,
+      rgba(var(--glare-rgb), calc(var(--glare-alpha) * 0.5)) calc(50% + var(--glare-width) * 0.5%),
+      rgba(var(--glare-rgb), 0.0) calc(50% + var(--glare-width) * 1%));
+
+  background-size: 200% 100%;
+  background-position: 50% 50%;
+
+  opacity: 0;
+  transition:
+    opacity 160ms ease,
+    background-position var(--transform-speed) ease;
+  z-index: 3;
+}
+
+
+
+.soft-btn--right .soft-btn__content::after {
+  opacity: 1;
+  background-position: 0% 50%;
+}
+
+.soft-btn--middle .soft-btn__content::after {
+  opacity: 1;
+  background-position: 50% 50%;
+}
+
+.soft-btn--left .soft-btn__content::after {
+  opacity: 1;
+  background-position: 100% 50%;
+}
+
 /* Pressed */
 .soft-btn--active .soft-btn__content {
   transform: translateY(var(--press-inset));
@@ -95,4 +143,15 @@
 .soft-btn--disabled {
   opacity: 0.6;
   pointer-events: none;
+}
+
+.soft-btn--disabled .soft-btn__content::after {
+  opacity: 0;
+}
+
+/* Pressed: full-surface glare */
+.soft-btn--active .soft-btn__content::after {
+  opacity: 1;
+  background: rgba(var(--glare-rgb), var(--glare-alpha));
+  background-position: 50% 50%;
 }

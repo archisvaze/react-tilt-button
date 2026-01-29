@@ -170,6 +170,34 @@ These override the selected variant.
 
 ---
 
+## Glare / Specular Highlight (Optional)
+
+The button supports a **dynamic specular glare highlight** that simulates light reflecting off the surface.
+
+It automatically shifts based on hover position (left / middle / right) and fades out on press.
+
+### Props
+
+| Prop           | Type   | Default   | Description                         |
+| -------------- | ------ | --------- | ----------------------------------- |
+| `glareColor`   | string | `#ffffff` | Color of the glare highlight        |
+| `glareOpacity` | number | `0`       | Intensity of the glare (0 → 1)      |
+| `glareWidth`   | number | `0`       | Width of glare band (0 → 100, in %) |
+
+### Example
+
+```jsx
+<TiltButton
+    glareColor="#ffffff"
+    glareOpacity={0.12}
+    glareWidth={60}
+>
+    Shiny Button
+</TiltButton>
+
+
+---
+
 ### Misc
 
 | Prop        | Description               |
@@ -201,6 +229,9 @@ All visuals are driven by CSS variables:
 - `--text-color`
 - `--border-color`
 - `--border-width`
+- `--glare-rgb`
+- `--glare-alpha`
+- `--glare-width`
 
 So you can theme it externally if needed.
 
@@ -222,3 +253,4 @@ It is a **physical, tactile UI primitive** that behaves like an object:
 ## License
 
 Use it. Ship it. Modify it.
+```

@@ -25,6 +25,10 @@ export default function App() {
     const [borderColor, setBorderColor] = useState('#d9445b');
     const [borderWidth, setBorderWidth] = useState(2);
 
+    const [glareColor, setGlareColor] = useState('#ffffff');
+    const [glareOpacity, setGlareOpacity] = useState(0.075);
+    const [glareWidth, setGlareWidth] = useState(40);
+
     const [disabled, setDisabled] = useState(false);
 
     // =========================
@@ -70,6 +74,9 @@ export default function App() {
                     bordered={bordered}
                     borderColor={borderColor}
                     borderWidth={borderWidth}
+                    glareColor={glareColor}
+                    glareOpacity={glareOpacity}
+                    glareWidth={glareWidth}
                     disabled={disabled}
                 >
                     {label}
@@ -146,6 +153,22 @@ export default function App() {
                         min={0}
                         max={10}
                     />
+                    <Control
+                        label='Glare Opacity'
+                        value={glareOpacity}
+                        set={setGlareOpacity}
+                        min={0}
+                        max={1}
+                        step={0.01}
+                    />
+                    <Control
+                        label='Glare Width (%)'
+                        value={glareWidth}
+                        set={setGlareWidth}
+                        min={0}
+                        max={100}
+                        step={1}
+                    />
                 </div>
 
                 <div className='grid colors'>
@@ -168,6 +191,11 @@ export default function App() {
                         label='Border'
                         value={borderColor}
                         set={setBorderColor}
+                    />
+                    <Color
+                        label='Glare'
+                        value={glareColor}
+                        set={setGlareColor}
                     />
                 </div>
 
