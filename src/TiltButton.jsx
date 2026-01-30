@@ -25,7 +25,6 @@ export default function TiltButton({
     surfaceColor,
     sideColor,
     textColor,
-    bordered,
     borderColor,
     borderWidth,
 
@@ -104,9 +103,8 @@ export default function TiltButton({
     const finalSurfaceColor = surfaceColor ?? variantPreset.surfaceColor;
     const finalSideColor = sideColor ?? variantPreset.sideColor;
     const finalTextColor = textColor ?? variantPreset.textColor;
-    const finalBordered = bordered ?? variantPreset.bordered;
     const finalBorderColor = borderColor ?? variantPreset.borderColor;
-    const finalBorderWidth = borderWidth ?? variantPreset.borderWidth;
+    const finalBorderWidth = borderWidth ?? variantPreset.borderWidth ?? 0;
 
     const styleVars = {
         '--button-raise-level': `${effectiveElevation}px`,
@@ -136,16 +134,7 @@ export default function TiltButton({
         ...safeUserStyle,
     };
 
-    const classes = [
-        'soft-btn',
-        active && 'soft-btn--active',
-        pos && `soft-btn--${pos}`,
-        disabled && 'soft-btn--disabled',
-
-        finalBordered && 'soft-btn--bordered',
-
-        className,
-    ]
+    const classes = ['soft-btn', active && 'soft-btn--active', pos && `soft-btn--${pos}`, disabled && 'soft-btn--disabled', className]
         .filter(Boolean)
         .join(' ');
 
@@ -175,11 +164,12 @@ function hexToRgb(hex) {
         return '255,255,255';
     }
     let h = hex.replace('#', '');
-    if (h.length === 3)
+    if (h.length === 3) {
         h = h
             .split('')
             .map((c) => c + c)
             .join('');
+    }
     if (h.length !== 6) {
         return '255,255,255';
     }

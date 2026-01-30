@@ -164,7 +164,6 @@ These override the selected variant.
 
 | Prop          |
 | ------------- |
-| `bordered`    |
 | `borderColor` |
 | `borderWidth` |
 
