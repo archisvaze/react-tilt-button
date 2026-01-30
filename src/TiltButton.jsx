@@ -67,47 +67,70 @@ export default function TiltButton({
     // Motion
     const motionMs = Math.max(0, Number(motion) || 0);
 
-    const updatePosFromClientX = (clientX) => {
+    function getPointerPos(e, el) {
+        const rect = el.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const w = rect.width || 1;
+
+        if (x < w * 0.33) return 'left';
+        if (x > w * 0.66) return 'right';
+        return 'middle';
+    }
+
+    const handlePointerDown = (e) => {
+        if (disabled) return;
+        if (e.button !== 0 && e.pointerType === 'mouse') return;
+
         const el = rootRef.current;
         if (!el) return;
 
-        const rect = el.getBoundingClientRect();
-        const x = clientX - rect.left;
-        const w = rect.width || 1;
+        el.setPointerCapture(e.pointerId);
 
-        if (x < w * 0.33) setPos('left');
-        else if (x > w * 0.66) setPos('right');
-        else setPos('middle');
+        const next = getPointerPos(e, el);
+        setPos((p) => (p === next ? p : next));
+        setActive(true);
     };
 
     const handlePointerMove = (e) => {
         if (disabled) return;
-        if (e.pointerType === 'mouse' || e.pointerType === 'touch') {
-            updatePosFromClientX(e.clientX);
-        }
+        if (e.pointerType !== 'mouse') return;
+
+        const el = rootRef.current;
+        if (!el) return;
+
+        const next = getPointerPos(e, el);
+        setPos((p) => (p === next ? p : next));
     };
 
-    const handlePointerDown = (e) => {
-        if (disabled) return;
-        if (e.button !== undefined && e.button !== 0) return;
+    const releasePointerState = (e) => {
+        const el = rootRef.current;
+        try {
+            if (el?.hasPointerCapture(e.pointerId)) {
+                el.releasePointerCapture(e.pointerId);
+            }
+        } catch {}
 
-        e.preventDefault();
-        setActive(true);
-        updatePosFromClientX(e.clientX);
+        setActive(false);
+        setPos(null);
+
+        if (disabled && active) {
+            releasePointerState(e);
+        }
     };
 
     const handlePointerUp = (e) => {
         if (disabled) return;
-
-        e.preventDefault();
-        setActive(false);
-        setPos(null);
+        releasePointerState(e);
         onClick && onClick(e);
     };
 
-    const handlePointerLeave = () => {
-        setActive(false);
-        setPos(null);
+    const handlePointerLeave = (e) => {
+        if (disabled) return;
+        releasePointerState(e);
+    };
+
+    const handlePointerCancel = (e) => {
+        releasePointerState(e);
     };
 
     const variantPreset = VARIANTS[variant] || VARIANTS.solid;
@@ -156,11 +179,11 @@ export default function TiltButton({
             ref={rootRef}
             className={classes}
             style={mergedStyle}
-            onPointerMove={handlePointerMove}
             onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerLeave}
-            onPointerCancel={handlePointerLeave}
+            onPointerCancel={handlePointerCancel}
             disabled={disabled}
         >
             <span className='soft-btn__wrapper'>
