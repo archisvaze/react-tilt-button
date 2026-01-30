@@ -12,6 +12,7 @@
   --glare-rgb: 255, 255, 255;
   --glare-alpha: 0;
   --glare-width: 0;
+  --edge-aa: 0px;
 
   position: relative;
   border: none;
@@ -64,6 +65,9 @@
   backface-visibility: hidden;
   transform-origin: center;
   z-index: 2;
+  box-shadow:
+    inset 0 0 0 var(--border-width) var(--border-color),
+    0 0 var(--edge-aa) rgba(0, 0, 0, 0.45);
 }
 
 .soft-btn__inner {
@@ -90,6 +94,12 @@
 .soft-btn--right .soft-btn__content {
   transform: skewY(calc(1deg * var(--button-hover-pressure)));
 }
+
+.soft-btn--left,
+.soft-btn--right {
+  --edge-aa: 1px;
+}
+
 
 /* Glare layer  */
 .soft-btn__content::after {
@@ -154,4 +164,13 @@
   opacity: 1;
   background: rgba(var(--glare-rgb), var(--glare-alpha));
   background-position: 50% 50%;
+}
+
+/* FIX: firefox doesn't antialias the rotation/skew */
+@supports (-moz-appearance: none) {
+
+  .soft-btn--left,
+  .soft-btn--right {
+    --edge-aa: 1.25px;
+  }
 }

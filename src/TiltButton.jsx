@@ -42,10 +42,6 @@ export default function TiltButton({
     const [active, setActive] = useState(false);
     const [pos, setPos] = useState(null);
 
-    // =========================
-    // SIMPLE PHYSICAL CLAMPS
-    // =========================
-
     const totalH = Math.max(0, Number(height) || 0);
 
     // Elevation
@@ -72,10 +68,6 @@ export default function TiltButton({
     // Motion
     const motionMs = Math.max(0, Number(motion) || 0);
 
-    // =========================
-    // INTERACTION
-    // =========================
-
     const handleMouseMove = (e) => {
         if (disabled) return;
         const el = rootRef.current;
@@ -83,7 +75,7 @@ export default function TiltButton({
 
         const rect = el.getBoundingClientRect();
         const x = e.clientX - rect.left;
-        const w = rect.width || 1; // prevent divide-by-zero edge
+        const w = rect.width || 1;
 
         if (x < w * 0.33) setPos('left');
         else if (x > w * 0.66) setPos('right');
@@ -106,10 +98,6 @@ export default function TiltButton({
         setActive(false);
         onClick && onClick(e);
     };
-
-    // =========================
-    // CSS VARS
-    // =========================
 
     const variantPreset = VARIANTS[variant] || VARIANTS.solid;
 
