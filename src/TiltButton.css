@@ -20,6 +20,8 @@
   padding: 0;
   cursor: pointer;
   user-select: none;
+  /* touch-action: manipulation;
+  touch-action: none; */
 }
 
 /* Wrapper */

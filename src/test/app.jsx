@@ -76,6 +76,7 @@ export default function App() {
                     glareOpacity={glareOpacity}
                     glareWidth={glareWidth}
                     disabled={disabled}
+                    onClick={() => console.log("clicked!")}
                 >
                     {label}
                 </TiltButton>

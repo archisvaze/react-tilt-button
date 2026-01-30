@@ -67,13 +67,12 @@ export default function TiltButton({
     // Motion
     const motionMs = Math.max(0, Number(motion) || 0);
 
-    const handleMouseMove = (e) => {
-        if (disabled) return;
+    const updatePosFromClientX = (clientX) => {
         const el = rootRef.current;
         if (!el) return;
 
         const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left;
+        const x = clientX - rect.left;
         const w = rect.width || 1;
 
         if (x < w * 0.33) setPos('left');
@@ -81,21 +80,34 @@ export default function TiltButton({
         else setPos('middle');
     };
 
-    const handleMouseLeave = () => {
-        setPos(null);
-        setActive(false);
+    const handlePointerMove = (e) => {
+        if (disabled) return;
+        if (e.pointerType === 'mouse' || e.pointerType === 'touch') {
+            updatePosFromClientX(e.clientX);
+        }
     };
 
-    const handleMouseDown = (e) => {
+    const handlePointerDown = (e) => {
         if (disabled) return;
-        if (e.button !== 0) return;
+        if (e.button !== undefined && e.button !== 0) return;
+
+        e.preventDefault();
         setActive(true);
+        updatePosFromClientX(e.clientX);
     };
 
-    const handleMouseUp = (e) => {
+    const handlePointerUp = (e) => {
         if (disabled) return;
+
+        e.preventDefault();
         setActive(false);
+        setPos(null);
         onClick && onClick(e);
+    };
+
+    const handlePointerLeave = () => {
+        setActive(false);
+        setPos(null);
     };
 
     const variantPreset = VARIANTS[variant] || VARIANTS.solid;
@@ -144,10 +156,11 @@ export default function TiltButton({
             ref={rootRef}
             className={classes}
             style={mergedStyle}
-            onMouseMove={handleMouseMove}
-            onMouseLeave={handleMouseLeave}
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
+            onPointerMove={handlePointerMove}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onPointerLeave={handlePointerLeave}
+            onPointerCancel={handlePointerLeave}
             disabled={disabled}
         >
             <span className='soft-btn__wrapper'>
