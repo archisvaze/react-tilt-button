@@ -44,6 +44,10 @@
   z-index: 1;
 }
 
+.soft-btn--active .soft-btn__wrapper::before {
+  border-radius: var(--radius);
+}
+
 /* Face */
 .soft-btn__content {
   position: relative;
@@ -93,6 +97,22 @@
   --edge-aa: 1px;
 }
 
+/* Pressed */
+.soft-btn--active .soft-btn__content {
+  transform: translateY(var(--press-inset));
+  transition: transform calc(var(--transform-speed) * 0.8) ease-out;
+}
+
+/* Disabled */
+.soft-btn--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.soft-btn--disabled .soft-btn__content::after {
+  opacity: 0;
+}
+
 /* Glare layer */
 .soft-btn__content::after {
   content: '';
@@ -101,11 +121,11 @@
   border-radius: inherit;
   pointer-events: none;
   background: linear-gradient(90deg,
-      rgba(var(--glare-rgb), 0.0) calc(50% - var(--glare-width) * 1%),
+      rgba(var(--glare-rgb), 0) calc(50% - var(--glare-width) * 1%),
       rgba(var(--glare-rgb), calc(var(--glare-alpha) * 0.5)) calc(50% - var(--glare-width) * 0.5%),
       rgba(var(--glare-rgb), var(--glare-alpha)) 50%,
       rgba(var(--glare-rgb), calc(var(--glare-alpha) * 0.5)) calc(50% + var(--glare-width) * 0.5%),
-      rgba(var(--glare-rgb), 0.0) calc(50% + var(--glare-width) * 1%));
+      rgba(var(--glare-rgb), 0) calc(50% + var(--glare-width) * 1%));
   background-size: 200% 100%;
   background-position: 50% 50%;
   opacity: 0;
@@ -128,22 +148,6 @@
 .soft-btn--left .soft-btn__content::after {
   opacity: 1;
   background-position: 100% 50%;
-}
-
-/* Pressed */
-.soft-btn--active .soft-btn__content {
-  transform: translateY(var(--press-inset));
-  transition: transform calc(var(--transform-speed) * 0.8) ease-out;
-}
-
-/* Disabled */
-.soft-btn--disabled {
-  opacity: 0.6;
-  pointer-events: none;
-}
-
-.soft-btn--disabled .soft-btn__content::after {
-  opacity: 0;
 }
 
 /* Pressed glare */

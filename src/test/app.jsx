@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { TiltButton } from '..';
+import TiltDiv from '../TitlDiv';
 import './app.css';
 
 function clamp(v, min, max) {
@@ -30,10 +31,6 @@ export default function App() {
 
     const [disabled, setDisabled] = useState(false);
 
-    // =========================
-    // Derived physical limits
-    // =========================
-
     const maxElevation = useMemo(() => faceHeight * 0.3, [faceHeight]);
     const clampedElevation = clamp(elevation, 0, maxElevation);
 
@@ -44,12 +41,8 @@ export default function App() {
     const clampedTilt = clamp(tilt, 0, maxTilt);
 
     const faceVisibleHeight = faceHeight - clampedElevation;
-    const maxRadius = Math.max(0, Math.floor(faceVisibleHeight / 4));
+    const maxRadius = Math.max(0, Math.floor(faceVisibleHeight / 2));
     const clampedRadius = clamp(radius, 0, maxRadius);
-
-    // =========================
-    // Keep UI state sane (no loops)
-    // =========================
 
     if (elevation !== clampedElevation) setElevation(clampedElevation);
     if (pressInset !== clampedPressInset) setPressInset(clampedPressInset);
@@ -76,10 +69,11 @@ export default function App() {
                     glareOpacity={glareOpacity}
                     glareWidth={glareWidth}
                     disabled={disabled}
-                    onClick={() => console.log("clicked!")}
+                    onClick={() => console.log('clicked!')}
                 >
                     {label}
                 </TiltButton>
+                <TiltDiv />
             </div>
 
             <div className='demo-panel'>
