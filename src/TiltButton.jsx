@@ -138,8 +138,10 @@ export default function TiltButton({
     const finalSurfaceColor = surfaceColor ?? variantPreset.surfaceColor;
     const finalSideColor = sideColor ?? variantPreset.sideColor;
     const finalTextColor = textColor ?? variantPreset.textColor;
-    const finalBorderColor = borderColor ?? variantPreset.borderColor;
-    const finalBorderWidth = borderWidth ?? variantPreset.borderWidth ?? 0;
+
+    const finalBorderColor =
+        typeof borderColor === 'string' && borderColor.trim() !== '' ? borderColor : variantPreset.borderColor || 'transparent';
+    const finalBorderWidth = typeof borderWidth === 'number' && borderWidth >= 0 ? borderWidth : (variantPreset.borderWidth ?? 0);
 
     const styleVars = {
         '--button-raise-level': `${effectiveElevation}px`,

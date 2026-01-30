@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { TiltButton } from '..';
-import TiltDiv from '../TitlDiv';
 import './app.css';
 
 function clamp(v, min, max) {
@@ -22,8 +21,8 @@ export default function App() {
     const [sideColor, setSideColor] = useState('#b22b3b');
     const [textColor, setTextColor] = useState('#ffffff');
 
-    const [borderColor, setBorderColor] = useState('#d9445b');
-    const [borderWidth, setBorderWidth] = useState(2);
+    const [borderColor, setBorderColor] = useState(null);
+    const [borderWidth, setBorderWidth] = useState(null);
 
     const [glareColor, setGlareColor] = useState('#ffffff');
     const [glareOpacity, setGlareOpacity] = useState(0.075);
@@ -41,7 +40,7 @@ export default function App() {
     const clampedTilt = clamp(tilt, 0, maxTilt);
 
     const faceVisibleHeight = faceHeight - clampedElevation;
-    const maxRadius = Math.max(0, Math.floor(faceVisibleHeight / 2));
+    const maxRadius = Math.max(0, Math.floor(faceVisibleHeight / 4));
     const clampedRadius = clamp(radius, 0, maxRadius);
 
     if (elevation !== clampedElevation) setElevation(clampedElevation);
@@ -73,7 +72,7 @@ export default function App() {
                 >
                     {label}
                 </TiltButton>
-                <TiltDiv />
+                {/* <TiltDiv /> */}
             </div>
 
             <div className='demo-panel'>
