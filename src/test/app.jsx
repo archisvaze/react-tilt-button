@@ -21,7 +21,6 @@ export default function App() {
     const [sideColor, setSideColor] = useState('#b22b3b');
     const [textColor, setTextColor] = useState('#ffffff');
 
-    const [bordered, setBordered] = useState(true);
     const [borderColor, setBorderColor] = useState('#d9445b');
     const [borderWidth, setBorderWidth] = useState(2);
 
@@ -71,7 +70,6 @@ export default function App() {
                     surfaceColor={surfaceColor}
                     sideColor={sideColor}
                     textColor={textColor}
-                    bordered={bordered}
                     borderColor={borderColor}
                     borderWidth={borderWidth}
                     glareColor={glareColor}
@@ -200,15 +198,6 @@ export default function App() {
                 </div>
 
                 <div className='toggles'>
-                    <label>
-                        <input
-                            type='checkbox'
-                            checked={bordered}
-                            onChange={(e) => setBordered(e.target.checked)}
-                        />
-                        Bordered
-                    </label>
-
                     <label>
                         <input
                             type='checkbox'

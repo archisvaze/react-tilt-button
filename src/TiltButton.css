@@ -40,8 +40,6 @@
   bottom: 0;
   height: calc(100% - var(--button-raise-level));
   background: var(--side-color);
-  border-bottom-left-radius: var(--radius);
-  border-bottom-right-radius: var(--radius);
   border-radius: var(--radius);
   z-index: 1;
 }
@@ -77,11 +75,6 @@
   z-index: 4;
 }
 
-/* Bordered */
-.soft-btn--bordered .soft-btn__content {
-  box-shadow: inset 0 0 0 var(--border-width) var(--border-color);
-}
-
 /* Hover deformation */
 .soft-btn--middle .soft-btn__content {
   transform: translateY(calc(1px * var(--button-hover-pressure)));
@@ -100,33 +93,27 @@
   --edge-aa: 1px;
 }
 
-
-/* Glare layer  */
+/* Glare layer */
 .soft-btn__content::after {
   content: '';
   position: absolute;
   inset: 0;
   border-radius: inherit;
   pointer-events: none;
-
   background: linear-gradient(90deg,
       rgba(var(--glare-rgb), 0.0) calc(50% - var(--glare-width) * 1%),
       rgba(var(--glare-rgb), calc(var(--glare-alpha) * 0.5)) calc(50% - var(--glare-width) * 0.5%),
       rgba(var(--glare-rgb), var(--glare-alpha)) 50%,
       rgba(var(--glare-rgb), calc(var(--glare-alpha) * 0.5)) calc(50% + var(--glare-width) * 0.5%),
       rgba(var(--glare-rgb), 0.0) calc(50% + var(--glare-width) * 1%));
-
   background-size: 200% 100%;
   background-position: 50% 50%;
-
   opacity: 0;
   transition:
     opacity 160ms ease,
     background-position var(--transform-speed) ease;
   z-index: 3;
 }
-
-
 
 .soft-btn--right .soft-btn__content::after {
   opacity: 1;
@@ -159,14 +146,14 @@
   opacity: 0;
 }
 
-/* Pressed: full-surface glare */
+/* Pressed glare */
 .soft-btn--active .soft-btn__content::after {
   opacity: 1;
   background: rgba(var(--glare-rgb), var(--glare-alpha));
   background-position: 50% 50%;
 }
 
-/* FIX: firefox doesn't antialias the rotation/skew */
+/* Firefox AA fix */
 @supports (-moz-appearance: none) {
 
   .soft-btn--left,
