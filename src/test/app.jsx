@@ -69,6 +69,7 @@ export default function App() {
                     glareWidth={glareWidth}
                     disabled={disabled}
                     onClick={() => console.log('clicked!')}
+                    // pressTilt={false}
                 >
                     <span style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{label}</span>
                 </TiltButton>

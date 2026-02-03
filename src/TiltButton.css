@@ -1,6 +1,7 @@
 .soft-btn {
   --button-raise-level: 14px;
   --press-inset: 5px;
+  --press-compensated: 0px;
   --button-hover-pressure: 2;
   --transform-speed: 160ms;
   --radius: 14px;
@@ -104,6 +105,16 @@
 .soft-btn--active .soft-btn__content {
   transform: translateY(var(--press-inset));
   transition: transform calc(var(--transform-speed) * 0.8) ease-out;
+}
+
+/* LEFT with tilt */
+.soft-btn--press-tilt.soft-btn--active.soft-btn--left .soft-btn__content {
+  transform: skewY(calc(-1deg * var(--button-hover-pressure))) translateY(var(--press-compensated));
+}
+
+/* RIGHT with tilt */
+.soft-btn--press-tilt.soft-btn--active.soft-btn--right .soft-btn__content {
+  transform: skewY(calc(1deg * var(--button-hover-pressure))) translateY(var(--press-compensated));
 }
 
 /* Disabled */

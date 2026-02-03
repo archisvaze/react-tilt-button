@@ -135,15 +135,16 @@ So the button:
 
 ### Geometry
 
-| Prop         | Type             | Default | Notes                          |
-| ------------ | ---------------- | ------- | ------------------------------ |
-| `width`      | number \| string | `260`   | No max                         |
-| `height`     | number \| string | `64`    | No max                         |
-| `elevation`  | number           | `14`    | Clamped to `height * 0.3`      |
-| `pressInset` | number           | `5`     | Clamped to `<= elevation`      |
-| `tilt`       | number           | `2`     | Clamped to `<= elevation / 9`  |
-| `radius`     | number           | `14`    | Clamped to `<= faceHeight / 4` |
-| `motion`     | number (ms)      | `160`   | Animation speed                |
+| Prop         | Type             | Default | Notes                                                 |
+| ------------ | ---------------- | ------- | ----------------------------------------------------- |
+| `width`      | number \| string | `260`   | No max                                                |
+| `height`     | number \| string | `64`    | No max                                                |
+| `elevation`  | number           | `14`    | Clamped to `height * 0.3`                             |
+| `pressInset` | number           | `5`     | Clamped to `<= elevation`                             |
+| `tilt`       | number           | `2`     | Clamped to `<= elevation / 9`                         |
+| `pressTilt`  | boolean          | `true`  | When `true`, the button keeps its skew while pressing |
+| `radius`     | number           | `14`    | Clamped to `<= faceHeight / 4`                        |
+| `motion`     | number (ms)      | `160`   | Animation speed                                       |
 
 ---
 

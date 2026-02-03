@@ -5,7 +5,6 @@ import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
 export default defineConfig({
     build: {
-        cssCodeSplit: false,
         lib: {
             entry: path.resolve(__dirname, 'src/index.js'),
             name: 'react-tilt-button',

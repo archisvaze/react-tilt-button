@@ -16,6 +16,7 @@ export default function TiltButton({
     elevation = 14,
     pressInset = 5,
     tilt = 2,
+    pressTilt = true,
     motion = 160,
 
     width = 260,
@@ -57,6 +58,12 @@ export default function TiltButton({
     const rawTilt = Math.max(0, Number(tilt) || 0);
     const maxTilt = Number((effectiveElevation / 9).toFixed(2));
     const effectiveTilt = clamp(rawTilt, 0, maxTilt);
+
+    const rect = rootRef.current?.getBoundingClientRect();
+    const actualWidth = rect?.width || Number(width) || 0;
+    const angleRad = (effectiveTilt * Math.PI) / 180;
+    const centerDrop = (actualWidth / 2) * Math.tan(angleRad);
+    const compensatedPress = Math.max(0, effectivePressInset - centerDrop);
 
     // Radius
     const faceHeight = totalH - effectiveElevation;
@@ -146,6 +153,7 @@ export default function TiltButton({
     const styleVars = {
         '--button-raise-level': `${effectiveElevation}px`,
         '--press-inset': `${effectivePressInset}px`,
+        '--press-compensated': `${compensatedPress}px`,
         '--button-hover-pressure': effectiveTilt,
         '--transform-speed': `${motionMs}ms`,
         '--radius': `${effectiveRadius}px`,
@@ -171,7 +179,14 @@ export default function TiltButton({
         ...safeUserStyle,
     };
 
-    const classes = ['soft-btn', active && 'soft-btn--active', pos && `soft-btn--${pos}`, disabled && 'soft-btn--disabled', className]
+    const classes = [
+        'soft-btn',
+        active && 'soft-btn--active',
+        pos && `soft-btn--${pos}`,
+        disabled && 'soft-btn--disabled',
+        pressTilt && 'soft-btn--press-tilt',
+        className,
+    ]
         .filter(Boolean)
         .join(' ');
 
