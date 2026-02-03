@@ -75,6 +75,7 @@
 .soft-btn__inner {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 10px;
   z-index: 4;
   width: 100%;

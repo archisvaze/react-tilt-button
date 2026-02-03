@@ -27,7 +27,6 @@ npm install react-tilt-button
 
 ```jsx
 import { TiltButton } from 'react-tilt-button';
-import '/node_modules/react-tilt-button/dist/react-tilt-button.css';
 ```
 
 ---
