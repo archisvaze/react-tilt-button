@@ -1,6 +1,6 @@
 {
     "name": "react-tilt-button",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "",
     "license": "MIT",
     "author": "archisvaze",
@@ -11,6 +11,7 @@
     ],
     "main": "./dist/react-tilt-button.umd.js",
     "module": "./dist/react-tilt-button.es.js",
+    "style": "./dist/react-tilt-button.css",
     "exports": {
         ".": {
             "import": "./dist/react-tilt-button.es.js",
@@ -59,5 +60,8 @@
     "peerDependencies": {
         "react": "^19.2.3",
         "react-dom": "^19.2.3"
+    },
+    "dependencies": {
+        "vite-plugin-css-injected-by-js": "^3.5.2"
     }
 }

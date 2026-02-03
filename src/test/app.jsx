@@ -70,7 +70,7 @@ export default function App() {
                     disabled={disabled}
                     onClick={() => console.log('clicked!')}
                 >
-                    {label}
+                    <span style={{ width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{label}</span>
                 </TiltButton>
                 {/* <TiltDiv /> */}
             </div>

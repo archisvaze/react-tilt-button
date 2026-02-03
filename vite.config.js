@@ -1,9 +1,11 @@
 import react from '@vitejs/plugin-react';
 import path from 'path';
 import { defineConfig } from 'vite';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 
 export default defineConfig({
     build: {
+        cssCodeSplit: false,
         lib: {
             entry: path.resolve(__dirname, 'src/index.js'),
             name: 'react-tilt-button',
@@ -18,6 +20,6 @@ export default defineConfig({
             },
         },
     },
-    plugins: [react()],
+    plugins: [react(), cssInjectedByJsPlugin()],
     server: { port: 3000 },
 });
