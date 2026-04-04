@@ -21,6 +21,17 @@
   padding: 0;
   cursor: pointer;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Focus ring (keyboard only) ── */
+.soft-btn:focus {
+  outline: none;
+}
+
+.soft-btn:focus-visible .soft-btn__content {
+  outline: 2px solid #2563eb;
+  outline-offset: 3px;
 }
 
 /* Wrapper */
@@ -121,6 +132,7 @@
 .soft-btn--disabled {
   opacity: 0.6;
   pointer-events: none;
+  cursor: not-allowed;
 }
 
 .soft-btn--disabled .soft-btn__content::after {
@@ -177,5 +189,16 @@
   .soft-btn--left,
   .soft-btn--right {
     --edge-aa: 1.25px;
+  }
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .soft-btn__content {
+    transition: none;
+  }
+
+  .soft-btn__content::after {
+    transition: none;
   }
 }

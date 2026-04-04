@@ -117,11 +117,11 @@ So the button:
 
 ### Core
 
-| Prop       | Type      | Default |
-| ---------- | --------- | ------- |
-| `children` | ReactNode | —       |
-| `onClick`  | function  | —       |
-| `disabled` | boolean   | `false` |
+| Prop       | Type      | Default   |
+| ---------- | --------- | --------- |
+| `children` | ReactNode | span      |
+| `onClick`  | function  | undefined |
+| `disabled` | boolean   | `false`   |
 
 ---
 

@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import './TiltButton.css';
 import { VARIANTS } from './variants';
 
@@ -34,6 +34,8 @@ export default function TiltButton({
     glareWidth = 0,
 
     className = '',
+
+    type = 'button',
 
     style: userStyle,
     ...props
@@ -84,6 +86,8 @@ export default function TiltButton({
         return 'middle';
     }
 
+    /* ── Pointer handlers ── */
+
     const handlePointerDown = (e) => {
         if (disabled) return;
         if (e.button !== 0 && e.pointerType === 'mouse') return;
@@ -109,7 +113,7 @@ export default function TiltButton({
         setPos((p) => (p === next ? p : next));
     };
 
-    const releasePointerState = (e) => {
+    const releasePointerState = useCallback((e) => {
         const el = rootRef.current;
         try {
             if (el?.hasPointerCapture(e.pointerId)) {
@@ -119,16 +123,13 @@ export default function TiltButton({
 
         setActive(false);
         setPos(null);
-
-        if (disabled && active) {
-            releasePointerState(e);
-        }
-    };
+    }, []);
 
     const handlePointerUp = (e) => {
         if (disabled) return;
         releasePointerState(e);
-        onClick && onClick(e);
+        // onClick is NOT called here - it fires via the native click event,
+        // which covers both pointer and keyboard activation.
     };
 
     const handlePointerLeave = (e) => {
@@ -139,6 +140,39 @@ export default function TiltButton({
     const handlePointerCancel = (e) => {
         releasePointerState(e);
     };
+
+    /* ── Keyboard handlers ── */
+
+    const handleKeyDown = (e) => {
+        if (disabled) return;
+
+        // Enter and Space are the two native <button> activation keys
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault(); // prevent Space from scrolling the page
+            setActive(true);
+            setPos('middle'); // keyboard presses animate as a center press
+        }
+    };
+
+    const handleKeyUp = (e) => {
+        if (disabled) return;
+
+        if (e.key === 'Enter' || e.key === ' ') {
+            setActive(false);
+            setPos(null);
+            // The native click event fires after keyup on <button>,
+            // so onClick will be handled by handleClick.
+        }
+    };
+
+    /* ── Native click handler (covers pointer + keyboard) ── */
+
+    const handleClick = (e) => {
+        if (disabled) return;
+        onClick?.(e);
+    };
+
+    /* ── Styles & classes ── */
 
     const variantPreset = VARIANTS[variant] || VARIANTS.solid;
 
@@ -194,16 +228,24 @@ export default function TiltButton({
         <button
             {...props}
             ref={rootRef}
+            type={type}
             className={classes}
             style={mergedStyle}
+            aria-disabled={disabled || undefined}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
             onPointerLeave={handlePointerLeave}
             onPointerCancel={handlePointerCancel}
+            onKeyDown={handleKeyDown}
+            onKeyUp={handleKeyUp}
+            onClick={handleClick}
             disabled={disabled}
         >
-            <span className='soft-btn__wrapper'>
+            <span
+                className='soft-btn__wrapper'
+                aria-hidden='true'
+            >
                 <span className='soft-btn__content'>
                     <span className='soft-btn__inner'>{children}</span>
                 </span>
