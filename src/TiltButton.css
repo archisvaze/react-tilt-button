@@ -128,10 +128,13 @@
   transform: skewY(calc(1deg * var(--button-hover-pressure))) translateY(var(--press-compensated));
 }
 
-/* Disabled */
+/*
+ * Disabled: pointer-events is NOT set to none here - that would prevent
+ * cursor: not-allowed from showing. Interaction is already blocked by the
+ * HTML disabled attribute and the JS guards in every handler.
+ */
 .soft-btn--disabled {
   opacity: 0.6;
-  pointer-events: none;
   cursor: not-allowed;
 }
 

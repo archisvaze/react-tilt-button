@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './TiltButton.css';
 import { VARIANTS } from './variants';
 
@@ -43,6 +43,25 @@ export default function TiltButton({
     const rootRef = useRef(null);
     const [active, setActive] = useState(false);
     const [pos, setPos] = useState(null);
+    const pressTimeRef = useRef(0);
+    const releaseTimerRef = useRef(null);
+    const deferredEventRef = useRef(null);
+
+    useEffect(() => {
+        return () => clearTimeout(releaseTimerRef.current);
+    }, []);
+
+    useEffect(() => {
+        if (disabled) {
+            if (releaseTimerRef.current) {
+                clearTimeout(releaseTimerRef.current);
+                releaseTimerRef.current = null;
+                deferredEventRef.current = null;
+            }
+            setActive(false);
+            setPos(null);
+        }
+    }, [disabled]);
 
     const totalH = Math.max(0, Number(height) || 0);
 
@@ -75,6 +94,7 @@ export default function TiltButton({
 
     // Motion
     const motionMs = Math.max(0, Number(motion) || 0);
+    const minPressMs = motionMs;
 
     function getPointerPos(e, el) {
         const rect = el.getBoundingClientRect();
@@ -95,7 +115,18 @@ export default function TiltButton({
         const el = rootRef.current;
         if (!el) return;
 
+        if (releaseTimerRef.current) {
+            clearTimeout(releaseTimerRef.current);
+            releaseTimerRef.current = null;
+            deferredEventRef.current = null;
+            setActive(false);
+            setPos(null);
+        }
+
         el.setPointerCapture(e.pointerId);
+
+        /* Record the press timestamp for the minimum-duration check on release. */
+        pressTimeRef.current = Date.now();
 
         const next = getPointerPos(e, el);
         setPos((p) => (p === next ? p : next));
@@ -127,17 +158,44 @@ export default function TiltButton({
 
     const handlePointerUp = (e) => {
         if (disabled) return;
-        releasePointerState(e);
+
+        const elapsed = Date.now() - pressTimeRef.current;
+        const remaining = minPressMs - elapsed;
+
+        if (remaining > 0) {
+            deferredEventRef.current = e;
+            releaseTimerRef.current = setTimeout(() => {
+                releaseTimerRef.current = null;
+                releasePointerState(deferredEventRef.current);
+                deferredEventRef.current = null;
+            }, remaining);
+        } else {
+            releasePointerState(e);
+        }
+
         // onClick is NOT called here - it fires via the native click event,
         // which covers both pointer and keyboard activation.
     };
 
     const handlePointerLeave = (e) => {
         if (disabled) return;
+
+        if (releaseTimerRef.current) {
+            clearTimeout(releaseTimerRef.current);
+            releaseTimerRef.current = null;
+            deferredEventRef.current = null;
+        }
+
         releasePointerState(e);
     };
 
     const handlePointerCancel = (e) => {
+        if (releaseTimerRef.current) {
+            clearTimeout(releaseTimerRef.current);
+            releaseTimerRef.current = null;
+            deferredEventRef.current = null;
+        }
+
         releasePointerState(e);
     };
 
@@ -146,9 +204,14 @@ export default function TiltButton({
     const handleKeyDown = (e) => {
         if (disabled) return;
 
-        // Enter and Space are the two native <button> activation keys
+        // Enter and Space are the two native <button> activation keys.
         if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault(); // prevent Space from scrolling the page
+            // Only prevent default for Space - it stops the page from scrolling.
+            // Enter must NOT be prevented: browsers fire the native click event
+            // on keydown for Enter, and preventDefault would suppress it,
+            // meaning onClick would never fire.
+            if (e.key === ' ') e.preventDefault();
+            if (e.repeat) return; // ignore held keys - avoids repeated state sets
             setActive(true);
             setPos('middle'); // keyboard presses animate as a center press
         }
@@ -160,19 +223,13 @@ export default function TiltButton({
         if (e.key === 'Enter' || e.key === ' ') {
             setActive(false);
             setPos(null);
-            // The native click event fires after keyup on <button>,
-            // so onClick will be handled by handleClick.
         }
     };
-
-    /* ── Native click handler (covers pointer + keyboard) ── */
 
     const handleClick = (e) => {
         if (disabled) return;
         onClick?.(e);
     };
-
-    /* ── Styles & classes ── */
 
     const variantPreset = VARIANTS[variant] || VARIANTS.solid;
 
@@ -242,10 +299,7 @@ export default function TiltButton({
             onClick={handleClick}
             disabled={disabled}
         >
-            <span
-                className='soft-btn__wrapper'
-                aria-hidden='true'
-            >
+            <span className='soft-btn__wrapper'>
                 <span className='soft-btn__content'>
                     <span className='soft-btn__inner'>{children}</span>
                 </span>
