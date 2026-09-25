@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { TiltButton } from '..';
+import { SPRING_PRESETS } from '../core/geometry';
 import './app.css';
 
 function clamp(v, min, max) {
@@ -30,7 +31,10 @@ export default function App() {
 
     const [disabled, setDisabled] = useState(false);
 
-    const maxElevation = useMemo(() => faceHeight * 0.3, [faceHeight]);
+    const [spring, setSpring] = useState('bouncy');
+    const [squish, setSquish] = useState(0.5);
+
+    const maxElevation = useMemo(() => faceHeight * 0.5, [faceHeight]);
     const clampedElevation = clamp(elevation, 0, maxElevation);
 
     const maxPressInset = clampedElevation;
@@ -40,7 +44,7 @@ export default function App() {
     const clampedTilt = clamp(tilt, 0, maxTilt);
 
     const faceVisibleHeight = faceHeight - clampedElevation;
-    const maxRadius = Math.max(0, Math.floor(faceVisibleHeight / 4));
+    const maxRadius = Math.max(0, Math.floor(Math.min(width, faceVisibleHeight) / 2));
     const clampedRadius = clamp(radius, 0, maxRadius);
 
     if (elevation !== clampedElevation) setElevation(clampedElevation);
@@ -59,6 +63,8 @@ export default function App() {
                     tilt={clampedTilt}
                     radius={clampedRadius}
                     motion={motion}
+                    spring={spring}
+                    squish={squish}
                     surfaceColor={surfaceColor}
                     sideColor={sideColor}
                     textColor={textColor}
@@ -78,6 +84,36 @@ export default function App() {
 
             <div className='demo-panel'>
                 <h2>React Tilt Button Configurator</h2>
+
+                <div className='grid'>
+                    <div className='control'>
+                        <div className='control-row'>
+                            <span>Spring</span>
+                            <span className='value'>{spring}</span>
+                        </div>
+                        <select
+                            value={spring}
+                            onChange={(e) => setSpring(e.target.value)}
+                        >
+                            {Object.keys(SPRING_PRESETS).map((key) => (
+                                <option
+                                    key={key}
+                                    value={key}
+                                >
+                                    {key}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <Control
+                        label='Squish'
+                        value={squish}
+                        set={setSquish}
+                        min={0}
+                        max={1}
+                        step={0.05}
+                    />
+                </div>
 
                 <div className='group'>
                     <label>Label</label>

@@ -11,10 +11,13 @@ export default defineConfig({
             fileName: (format) => `react-tilt-button.${format}.js`,
         },
         rollupOptions: {
-            external: ['react', 'react-dom'],
+            // react/jsx-runtime must stay external too, or a copy of it ends up inside dist.
+            external: ['react', 'react-dom', 'react/jsx-runtime'],
             output: {
                 globals: {
                     react: 'React',
+                    'react-dom': 'ReactDOM',
+                    'react/jsx-runtime': 'ReactJSXRuntime',
                 },
             },
         },

@@ -1,7 +1,6 @@
 .soft-btn {
   --button-raise-level: 14px;
   --press-inset: 5px;
-  --press-compensated: 0px;
   --button-hover-pressure: 2;
   --transform-speed: 160ms;
   --radius: 14px;
@@ -22,6 +21,8 @@
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
+  /* Vertical swipes scroll the page, horizontal moves tilt the button */
+  touch-action: pan-y pinch-zoom;
 }
 
 /* ── Focus ring (keyboard only) ── */
@@ -34,30 +35,25 @@
   outline-offset: 3px;
 }
 
-/* Wrapper */
+/* Wrapper (scaled from the bottom for squish) */
 .soft-btn__wrapper {
   position: relative;
   display: block;
   width: 100%;
   height: 100%;
-  transform-style: preserve-3d;
+  transform-origin: 50% 100%;
 }
 
-/* Side wall */
-.soft-btn__wrapper::before {
-  content: '';
+/* Side wall, an SVG path built in core/geometry.js */
+.soft-btn__side {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: calc(100% - var(--button-raise-level));
-  background: var(--side-color);
-  border-radius: var(--radius);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: var(--side-color);
+  pointer-events: none;
   z-index: 1;
-}
-
-.soft-btn--active .soft-btn__wrapper::before {
-  border-radius: var(--radius);
 }
 
 /* Face */
@@ -73,8 +69,6 @@
   justify-content: center;
   font-size: 18px;
   font-weight: 600;
-  transform: translateY(0);
-  transition: transform var(--transform-speed) ease-out;
   will-change: transform;
   backface-visibility: hidden;
   transform-origin: center;
@@ -94,38 +88,10 @@
   height: 100%;
 }
 
-/* Hover deformation */
-.soft-btn--middle .soft-btn__content {
-  transform: translateY(calc(1px * var(--button-hover-pressure)));
-}
-
-.soft-btn--left .soft-btn__content {
-  transform: skewY(calc(-1deg * var(--button-hover-pressure)));
-}
-
-.soft-btn--right .soft-btn__content {
-  transform: skewY(calc(1deg * var(--button-hover-pressure)));
-}
-
-.soft-btn--left,
-.soft-btn--right {
+/* Anti-aliasing for skewed edges */
+.soft-btn--hover,
+.soft-btn--active {
   --edge-aa: 1px;
-}
-
-/* Pressed */
-.soft-btn--active .soft-btn__content {
-  transform: translateY(var(--press-inset));
-  transition: transform calc(var(--transform-speed) * 0.8) ease-out;
-}
-
-/* LEFT with tilt */
-.soft-btn--press-tilt.soft-btn--active.soft-btn--left .soft-btn__content {
-  transform: skewY(calc(-1deg * var(--button-hover-pressure))) translateY(var(--press-compensated));
-}
-
-/* RIGHT with tilt */
-.soft-btn--press-tilt.soft-btn--active.soft-btn--right .soft-btn__content {
-  transform: skewY(calc(1deg * var(--button-hover-pressure))) translateY(var(--press-compensated));
 }
 
 /*
@@ -142,7 +108,7 @@
   opacity: 0;
 }
 
-/* Glare layer */
+/* Glare layer (--glare-x is set from JS) */
 .soft-btn__content::after {
   content: '';
   position: absolute;
@@ -156,51 +122,33 @@
       rgba(var(--glare-rgb), calc(var(--glare-alpha) * 0.5)) calc(50% + var(--glare-width) * 0.5%),
       rgba(var(--glare-rgb), 0) calc(50% + var(--glare-width) * 1%));
   background-size: 200% 100%;
-  background-position: 50% 50%;
+  background-position: var(--glare-x, 50%) 50%;
   opacity: 0;
-  transition:
-    opacity 160ms ease,
-    background-position var(--transform-speed) ease;
+  transition: opacity 160ms ease;
   z-index: 3;
 }
 
-.soft-btn--right .soft-btn__content::after {
+.soft-btn--hover .soft-btn__content::after,
+.soft-btn--active .soft-btn__content::after {
   opacity: 1;
-  background-position: 0% 50%;
-}
-
-.soft-btn--middle .soft-btn__content::after {
-  opacity: 1;
-  background-position: 50% 50%;
-}
-
-.soft-btn--left .soft-btn__content::after {
-  opacity: 1;
-  background-position: 100% 50%;
 }
 
 /* Pressed glare */
 .soft-btn--active .soft-btn__content::after {
-  opacity: 1;
   background: rgba(var(--glare-rgb), var(--glare-alpha));
-  background-position: 50% 50%;
 }
 
 /* Firefox AA fix */
 @supports (-moz-appearance: none) {
 
-  .soft-btn--left,
-  .soft-btn--right {
+  .soft-btn--hover,
+  .soft-btn--active {
     --edge-aa: 1.25px;
   }
 }
 
 /* ── Reduced motion ── */
 @media (prefers-reduced-motion: reduce) {
-  .soft-btn__content {
-    transition: none;
-  }
-
   .soft-btn__content::after {
     transition: none;
   }

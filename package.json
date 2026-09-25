@@ -1,6 +1,6 @@
 {
     "name": "react-tilt-button",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "",
     "license": "MIT",
     "author": "archisvaze",
@@ -54,13 +54,11 @@
         "@vitejs/plugin-react": "^5.1.2",
         "react": "^19.2.3",
         "react-dom": "^19.2.3",
-        "vite": "^7.3.1"
+        "vite": "^7.3.1",
+        "vite-plugin-css-injected-by-js": "^3.5.2"
     },
     "peerDependencies": {
         "react": "^19.2.3",
         "react-dom": "^19.2.3"
-    },
-    "dependencies": {
-        "vite-plugin-css-injected-by-js": "^3.5.2"
     }
 }

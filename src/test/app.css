@@ -78,3 +78,13 @@ body {
   gap: 20px;
   font-size: 14px;
 }
+
+.control select {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: none;
+  background: #0f172a;
+  color: #e5e7eb;
+  outline: 1px solid #1e293b;
+}

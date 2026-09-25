@@ -1,330 +1,82 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { computePose, REST_POSE } from './core/geometry';
+import { createSpringEngine } from './core/springs';
+import { useTiltButton } from './core/useTiltButton';
 import './TiltButton.css';
-import { VARIANTS } from './variants';
 
-function clamp(v, min, max) {
-    return Math.max(min, Math.min(max, v));
-}
+const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
-export default function TiltButton({
-    children,
-    onClick,
-    disabled = false,
+// The springs write straight to the DOM, so animating never re-renders React.
+export default function TiltButton(props) {
+    const animateRef = useRef(() => {});
+    const { buttonProps, children, geometry, springConfig } = useTiltButton(props, animateRef);
 
-    variant = 'solid',
+    const wrapperRef = useRef(null);
+    const faceRef = useRef(null);
+    const sideRef = useRef(null);
+    const geometryRef = useRef(geometry);
 
-    elevation = 14,
-    pressInset = 5,
-    tilt = 2,
-    pressTilt = true,
-    motion = 160,
+    const engineRef = useRef(null);
 
-    width = 260,
-    height = 64,
-    radius = 14,
+    // Initial side wall for the first paint and SSR. The engine updates it after that.
+    const restSide = useMemo(() => computePose(REST_POSE, geometry).side, [geometry]);
 
-    surfaceColor,
-    sideColor,
-    textColor,
-    borderColor,
-    borderWidth,
+    useIsoLayoutEffect(() => {
+        const engine = createSpringEngine(REST_POSE, (values) => {
+            const wrapper = wrapperRef.current;
+            const face = faceRef.current;
+            const side = sideRef.current;
+            if (!wrapper || !face || !side) return;
 
-    glareColor = '#ffffff',
-    glareOpacity = 0,
-    glareWidth = 0,
+            const pose = computePose(values, geometryRef.current);
+            wrapper.style.transform = pose.wrapper;
+            face.style.transform = pose.face;
+            face.style.setProperty('--glare-x', pose.glare);
+            side.setAttribute('d', pose.side);
+        });
 
-    className = '',
+        engineRef.current = engine;
+        animateRef.current = (targets, instant) => engine.to(targets, instant);
 
-    type = 'button',
-
-    style: userStyle,
-    ...props
-}) {
-    const rootRef = useRef(null);
-    const [active, setActive] = useState(false);
-    const [pos, setPos] = useState(null);
-    const pressTimeRef = useRef(0);
-    const releaseTimerRef = useRef(null);
-    const deferredEventRef = useRef(null);
-
-    useEffect(() => {
-        return () => clearTimeout(releaseTimerRef.current);
+        return () => {
+            engine.stop();
+            engineRef.current = null;
+            animateRef.current = () => {};
+        };
     }, []);
 
-    useEffect(() => {
-        if (disabled) {
-            if (releaseTimerRef.current) {
-                clearTimeout(releaseTimerRef.current);
-                releaseTimerRef.current = null;
-                deferredEventRef.current = null;
-            }
-            setActive(false);
-            setPos(null);
-        }
-    }, [disabled]);
+    useIsoLayoutEffect(() => {
+        engineRef.current?.configure(springConfig);
+    }, [springConfig]);
 
-    const totalH = Math.max(0, Number(height) || 0);
-
-    // Elevation
-    const rawElevation = Math.max(0, Number(elevation) || 0);
-    const MAX_ELEVATION_RATIO = 0.3;
-    const maxElevation = totalH * MAX_ELEVATION_RATIO;
-    const effectiveElevation = clamp(rawElevation, 0, maxElevation);
-
-    // Press inset
-    const rawPressInset = Math.max(0, Number(pressInset) || 0);
-    const effectivePressInset = clamp(rawPressInset, 0, effectiveElevation);
-
-    // Tilt
-    const rawTilt = Math.max(0, Number(tilt) || 0);
-    const maxTilt = Number((effectiveElevation / 9).toFixed(2));
-    const effectiveTilt = clamp(rawTilt, 0, maxTilt);
-
-    const rect = rootRef.current?.getBoundingClientRect();
-    const actualWidth = rect?.width || Number(width) || 0;
-    const angleRad = (effectiveTilt * Math.PI) / 180;
-    const centerDrop = (actualWidth / 2) * Math.tan(angleRad);
-    const compensatedPress = Math.max(0, effectivePressInset - centerDrop);
-
-    // Radius
-    const faceHeight = totalH - effectiveElevation;
-    const maxRadius = Math.max(0, Math.floor(faceHeight / 4));
-    const rawRadius = Math.max(0, Number(radius) || 0);
-    const effectiveRadius = clamp(rawRadius, 0, maxRadius);
-
-    // Motion
-    const motionMs = Math.max(0, Number(motion) || 0);
-    const minPressMs = motionMs;
-
-    function getPointerPos(e, el) {
-        const rect = el.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const w = rect.width || 1;
-
-        if (x < w * 0.33) return 'left';
-        if (x > w * 0.66) return 'right';
-        return 'middle';
-    }
-
-    /* ── Pointer handlers ── */
-
-    const handlePointerDown = (e) => {
-        if (disabled) return;
-        if (e.button !== 0 && e.pointerType === 'mouse') return;
-
-        const el = rootRef.current;
-        if (!el) return;
-
-        if (releaseTimerRef.current) {
-            clearTimeout(releaseTimerRef.current);
-            releaseTimerRef.current = null;
-            deferredEventRef.current = null;
-            setActive(false);
-            setPos(null);
-        }
-
-        el.setPointerCapture(e.pointerId);
-
-        /* Record the press timestamp for the minimum-duration check on release. */
-        pressTimeRef.current = Date.now();
-
-        const next = getPointerPos(e, el);
-        setPos((p) => (p === next ? p : next));
-        setActive(true);
-    };
-
-    const handlePointerMove = (e) => {
-        if (disabled) return;
-        if (e.pointerType !== 'mouse') return;
-
-        const el = rootRef.current;
-        if (!el) return;
-
-        const next = getPointerPos(e, el);
-        setPos((p) => (p === next ? p : next));
-    };
-
-    const releasePointerState = useCallback((e) => {
-        const el = rootRef.current;
-        try {
-            if (el?.hasPointerCapture(e.pointerId)) {
-                el.releasePointerCapture(e.pointerId);
-            }
-        } catch {}
-
-        setActive(false);
-        setPos(null);
-    }, []);
-
-    const handlePointerUp = (e) => {
-        if (disabled) return;
-
-        const elapsed = Date.now() - pressTimeRef.current;
-        const remaining = minPressMs - elapsed;
-
-        if (remaining > 0) {
-            deferredEventRef.current = e;
-            releaseTimerRef.current = setTimeout(() => {
-                releaseTimerRef.current = null;
-                releasePointerState(deferredEventRef.current);
-                deferredEventRef.current = null;
-            }, remaining);
-        } else {
-            releasePointerState(e);
-        }
-
-        // onClick is NOT called here - it fires via the native click event,
-        // which covers both pointer and keyboard activation.
-    };
-
-    const handlePointerLeave = (e) => {
-        if (disabled) return;
-
-        if (releaseTimerRef.current) {
-            clearTimeout(releaseTimerRef.current);
-            releaseTimerRef.current = null;
-            deferredEventRef.current = null;
-        }
-
-        releasePointerState(e);
-    };
-
-    const handlePointerCancel = (e) => {
-        if (releaseTimerRef.current) {
-            clearTimeout(releaseTimerRef.current);
-            releaseTimerRef.current = null;
-            deferredEventRef.current = null;
-        }
-
-        releasePointerState(e);
-    };
-
-    /* ── Keyboard handlers ── */
-
-    const handleKeyDown = (e) => {
-        if (disabled) return;
-
-        // Enter and Space are the two native <button> activation keys.
-        if (e.key === 'Enter' || e.key === ' ') {
-            // Only prevent default for Space - it stops the page from scrolling.
-            // Enter must NOT be prevented: browsers fire the native click event
-            // on keydown for Enter, and preventDefault would suppress it,
-            // meaning onClick would never fire.
-            if (e.key === ' ') e.preventDefault();
-            if (e.repeat) return; // ignore held keys - avoids repeated state sets
-            setActive(true);
-            setPos('middle'); // keyboard presses animate as a center press
-        }
-    };
-
-    const handleKeyUp = (e) => {
-        if (disabled) return;
-
-        if (e.key === 'Enter' || e.key === ' ') {
-            setActive(false);
-            setPos(null);
-        }
-    };
-
-    const handleClick = (e) => {
-        if (disabled) return;
-        onClick?.(e);
-    };
-
-    const variantPreset = VARIANTS[variant] || VARIANTS.solid;
-
-    const finalSurfaceColor = surfaceColor ?? variantPreset.surfaceColor;
-    const finalSideColor = sideColor ?? variantPreset.sideColor;
-    const finalTextColor = textColor ?? variantPreset.textColor;
-
-    const finalBorderColor =
-        typeof borderColor === 'string' && borderColor.trim() !== '' ? borderColor : variantPreset.borderColor || 'transparent';
-    const finalBorderWidth = typeof borderWidth === 'number' && borderWidth >= 0 ? borderWidth : (variantPreset.borderWidth ?? 0);
-
-    const styleVars = {
-        '--button-raise-level': `${effectiveElevation}px`,
-        '--press-inset': `${effectivePressInset}px`,
-        '--press-compensated': `${compensatedPress}px`,
-        '--button-hover-pressure': effectiveTilt,
-        '--transform-speed': `${motionMs}ms`,
-        '--radius': `${effectiveRadius}px`,
-
-        '--surface-color': finalSurfaceColor,
-        '--side-color': finalSideColor,
-        '--text-color': finalTextColor,
-        '--border-color': finalBorderColor,
-        '--border-width': `${finalBorderWidth}px`,
-
-        '--glare-rgb': hexToRgb(glareColor),
-        '--glare-alpha': glareOpacity,
-        '--glare-width': glareWidth,
-
-        width: typeof width === 'number' ? `${width}px` : width,
-        height: typeof height === 'number' ? `${height}px` : height,
-    };
-
-    const safeUserStyle = userStyle && typeof userStyle === 'object' ? userStyle : {};
-
-    const mergedStyle = {
-        ...styleVars,
-        ...safeUserStyle,
-    };
-
-    const classes = [
-        'soft-btn',
-        active && 'soft-btn--active',
-        pos && `soft-btn--${pos}`,
-        disabled && 'soft-btn--disabled',
-        pressTilt && 'soft-btn--press-tilt',
-        className,
-    ]
-        .filter(Boolean)
-        .join(' ');
+    useIsoLayoutEffect(() => {
+        geometryRef.current = geometry;
+        engineRef.current?.paint();
+    }, [geometry]);
 
     return (
-        <button
-            {...props}
-            ref={rootRef}
-            type={type}
-            className={classes}
-            style={mergedStyle}
-            aria-disabled={disabled || undefined}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={handlePointerUp}
-            onPointerLeave={handlePointerLeave}
-            onPointerCancel={handlePointerCancel}
-            onKeyDown={handleKeyDown}
-            onKeyUp={handleKeyUp}
-            onClick={handleClick}
-            disabled={disabled}
-        >
-            <span className='soft-btn__wrapper'>
-                <span className='soft-btn__content'>
+        <button {...buttonProps}>
+            <span
+                ref={wrapperRef}
+                className='soft-btn__wrapper'
+            >
+                <svg
+                    className='soft-btn__side'
+                    aria-hidden='true'
+                    focusable='false'
+                >
+                    <path
+                        ref={sideRef}
+                        d={restSide}
+                    />
+                </svg>
+                <span
+                    ref={faceRef}
+                    className='soft-btn__content'
+                >
                     <span className='soft-btn__inner'>{children}</span>
                 </span>
             </span>
         </button>
     );
-}
-
-function hexToRgb(hex) {
-    if (!hex || typeof hex !== 'string') {
-        return '255,255,255';
-    }
-    let h = hex.replace('#', '');
-    if (h.length === 3) {
-        h = h
-            .split('')
-            .map((c) => c + c)
-            .join('');
-    }
-    if (h.length !== 6) {
-        return '255,255,255';
-    }
-
-    const r = parseInt(h.slice(0, 2), 16);
-    const g = parseInt(h.slice(2, 4), 16);
-    const b = parseInt(h.slice(4, 6), 16);
-    return `${r},${g},${b}`;
 }
