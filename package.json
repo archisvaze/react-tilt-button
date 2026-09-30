@@ -1,10 +1,29 @@
 {
     "name": "react-tilt-button",
-    "version": "0.2.0",
-    "description": "",
+    "version": "0.2.1",
+    "description": "A physical, 3D tactile React button with tilt, squish, spring physics and real depth.",
     "license": "MIT",
     "author": "archisvaze",
-    "keywords": [],
+    "keywords": [
+        "react",
+        "react-component",
+        "button",
+        "3d-button",
+        "tilt",
+        "tactile",
+        "spring",
+        "squish",
+        "animation",
+        "ui"
+    ],
+    "homepage": "https://react-tilt-button.vercel.app/",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/archisvaze/react-tilt-button.git"
+    },
+    "bugs": {
+        "url": "https://github.com/archisvaze/react-tilt-button/issues"
+    },
     "files": [
         "dist",
         "README.md"
@@ -58,7 +77,7 @@
         "vite-plugin-css-injected-by-js": "^3.5.2"
     },
     "peerDependencies": {
-        "react": "^19.2.3",
-        "react-dom": "^19.2.3"
+        "react": "^18.0.0 || ^19.0.0",
+        "react-dom": "^18.0.0 || ^19.0.0"
     }
 }

@@ -55,10 +55,17 @@ export function resolveSpring(spring, motionMs) {
 
     const scale = Math.max(motionMs, 1) / DEFAULT_MOTION;
 
+    // Zero or invalid stiffness/mass (or negative damping) would give NaN or a spring that never settles
+    const fallback = SPRING_PRESETS.bouncy;
+    const finite = (v, ok, fb) => (Number.isFinite(Number(v)) && ok(Number(v)) ? Number(v) : fb);
+    const stiffness = finite(base.stiffness, (v) => v > 0, fallback.stiffness);
+    const damping = finite(base.damping, (v) => v >= 0, fallback.damping);
+    const mass = finite(base.mass, (v) => v > 0, fallback.mass);
+
     return {
-        stiffness: base.stiffness / (scale * scale),
-        damping: base.damping / scale,
-        mass: base.mass,
+        stiffness: stiffness / (scale * scale),
+        damping: damping / scale,
+        mass,
     };
 }
 
@@ -78,14 +85,17 @@ export function resolveColors(variant, { surfaceColor, sideColor, textColor, bor
 export function hexToRgb(hex) {
     if (!hex || typeof hex !== 'string') return '255,255,255';
 
-    let h = hex.replace('#', '');
-    if (h.length === 3) {
+    let h = hex.trim().replace('#', '');
+    // #rgba and #rrggbbaa are accepted, the alpha part is ignored (glareOpacity sets it)
+    if (h.length === 3 || h.length === 4) {
         h = h
+            .slice(0, 3)
             .split('')
             .map((c) => c + c)
             .join('');
     }
-    if (h.length !== 6) return '255,255,255';
+    if (h.length === 8) h = h.slice(0, 6);
+    if (!/^[0-9a-f]{6}$/i.test(h)) return '255,255,255';
 
     return `${parseInt(h.slice(0, 2), 16)},${parseInt(h.slice(2, 4), 16)},${parseInt(h.slice(4, 6), 16)}`;
 }

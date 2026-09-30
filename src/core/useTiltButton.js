@@ -7,6 +7,15 @@ const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayout
 // How far (px) a pressed pointer can leave the button before the press is cancelled
 const CANCEL_SLOP = 20;
 
+// Runs the user's handler first so passing e.g. onKeyDown or onPointerDown doesn't drop either one
+const chain = (user, own) =>
+    typeof user === 'function'
+        ? (e) => {
+              user(e);
+              own(e);
+          }
+        : own;
+
 function usePrefersReducedMotion() {
     const [reduced, setReduced] = useState(false);
 
@@ -59,10 +68,22 @@ export function useTiltButton(props, animateRef) {
         className = '',
         type = 'button',
         style: userStyle,
+        ref: forwardedRef,
         ...rest
     } = props;
 
     const rootRef = useRef(null);
+
+    // React 19 passes `ref` as a prop. Point it at the <button> too, next to our own ref.
+    const setRootRef = useCallback(
+        (node) => {
+            rootRef.current = node;
+            if (typeof forwardedRef === 'function') forwardedRef(node);
+            else if (forwardedRef) forwardedRef.current = node;
+        },
+        [forwardedRef],
+    );
+
     const releaseTimerRef = useRef(null);
     const stateRef = useRef({ nx: 0, hover: false, pressed: false, cancelled: false, byKey: false, pressStart: 0, suppressClick: false });
 
@@ -297,8 +318,8 @@ export function useTiltButton(props, animateRef) {
     const handleKeyDown = (e) => {
         if (disabled || (e.key !== 'Enter' && e.key !== ' ')) return;
 
-        // Prevent Space from scrolling. Enter must not be prevented, it fires the native click on keydown.
-        if (e.key === ' ') e.preventDefault();
+        // Never preventDefault here. A native button already keeps Space from scrolling the page,
+        // and preventing the keydown stops Chrome from firing the click (Space on keyup, Enter on keydown).
         if (e.repeat) return;
 
         Object.assign(stateRef.current, { pressed: true, cancelled: false, byKey: true, nx: 0 });
@@ -379,21 +400,21 @@ export function useTiltButton(props, animateRef) {
         instant,
         buttonProps: {
             ...rest,
-            ref: rootRef,
+            ref: setRootRef,
             type,
             className: classes,
             style,
             disabled,
             'aria-disabled': disabled || undefined,
-            onPointerEnter: handlePointerEnter,
-            onPointerMove: handlePointerMove,
-            onPointerDown: handlePointerDown,
-            onPointerUp: handlePointerUp,
-            onPointerLeave: handlePointerLeave,
-            onPointerCancel: handlePointerCancel,
-            onKeyDown: handleKeyDown,
-            onKeyUp: handleKeyUp,
-            onBlur: handleBlur,
+            onPointerEnter: chain(rest.onPointerEnter, handlePointerEnter),
+            onPointerMove: chain(rest.onPointerMove, handlePointerMove),
+            onPointerDown: chain(rest.onPointerDown, handlePointerDown),
+            onPointerUp: chain(rest.onPointerUp, handlePointerUp),
+            onPointerLeave: chain(rest.onPointerLeave, handlePointerLeave),
+            onPointerCancel: chain(rest.onPointerCancel, handlePointerCancel),
+            onKeyDown: chain(rest.onKeyDown, handleKeyDown),
+            onKeyUp: chain(rest.onKeyUp, handleKeyUp),
+            onBlur: chain(rest.onBlur, handleBlur),
             onClick: handleClick,
         },
     };

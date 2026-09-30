@@ -32,6 +32,8 @@ npm install react-tilt-button
 import { TiltButton } from 'react-tilt-button';
 ```
 
+Works with React 18 and 19.
+
 ---
 
 ## Basic Usage
@@ -98,6 +100,14 @@ Or pass your own spring:
 ```
 
 Lower `damping` means more wobble, higher `stiffness` means faster. `motion` scales the speed of the spring without changing how bouncy it is (`motion={0}` disables animation).
+
+The presets are exported as `TiltButtonSprings`, so you can start from one and tweak it:
+
+```jsx
+import { TiltButton, TiltButtonSprings } from 'react-tilt-button';
+
+<TiltButton spring={{ ...TiltButtonSprings.jelly, damping: 12 }}>Less wobble</TiltButton>
+```
 
 ---
 
@@ -236,11 +246,13 @@ It follows the pointer and becomes an even tint while pressed.
 
 ### Misc
 
-| Prop        | Description               |
-| ----------- | ------------------------- |
-| `className` | Extra classes             |
-| `style`     | Merged into inline styles |
-| `...props`  | Passed to `<button>`      |
+| Prop        | Description                                                          |
+| ----------- | -------------------------------------------------------------------- |
+| `className` | Extra classes                                                        |
+| `style`     | Merged into inline styles                                            |
+| `type`      | Button type, defaults to `'button'`                                  |
+| `ref`       | Forwarded to the `<button>` (React 19)                               |
+| `...props`  | Passed to `<button>`. Your pointer, key and blur handlers run too    |
 
 ---
 
